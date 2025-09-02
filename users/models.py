@@ -35,6 +35,7 @@ class Company(Base):
         "length(phone) = 10 AND phone GLOB '[0-9]*'", 
         name="company_phone_check_constraint"
     )
+    
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
