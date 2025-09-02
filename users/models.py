@@ -8,7 +8,7 @@ class UserScope(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     scope_name = Column(String, nullable=False)
     users = relationship('User', back_populates='scopes')
-
+ 
 class Company(Base):
     __tablename__ = 'companies'
     id = Column(Integer, primary_key=True, autoincrement=True)
