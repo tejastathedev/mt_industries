@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, CheckConstraint, Dat
 from sqlalchemy.orm import relationship
 from database import Base
 from users.schema import Constants
+from orders.models import Order
 class UserScope(Base):
     __tablename__  = 'userscopes'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -56,9 +57,14 @@ class User(Base):
 
     scope = relationship('UserScope', back_populates='users', uselist=False)
     company = relationship('Company', back_populates='users', uselist=False)
+
     created_by_user = relationship('User', remote_side=[id], foreign_keys=[created_by], post_update=True)
     updated_by_user = relationship('User', remote_side=[id], foreign_keys=[updated_by], post_update=True)
     deleted_by_user = relationship('User', remote_side=[id], foreign_keys=[deleted_by], post_update=True)
+
+    created_orders = relationship('Order', foreign_keys=[Order.created_by], back_populates='created_by_user')
+    updated_orders = relationship('Order', foreign_keys=[Order.updated_by], back_populates='updated_by_user')
+    deleted_orders = relationship('Order', foreign_keys=[Order.deleted_by], back_populates='deleted_by_user')
 
     __table_args__ = (
         CheckConstraint("length(phone) = 10 AND phone GLOB '[0-9]*'", name="user_phone_check_constraint"),
