@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 from users.schema import Constants
 from orders.models import Order
+
 class UserScope(Base):
     __tablename__  = 'userscopes'
     id = Column(Integer, primary_key=True, autoincrement=True)
