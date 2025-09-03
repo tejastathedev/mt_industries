@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func
 from sqlalchemy.orm import relationship, validates
 from database import Base
-from orders.schema import Constants
 from config import settings
 
 # Columns that are common in most of the tables :-
@@ -25,12 +24,15 @@ class Order(Base):
     customer_mail = Column(String(255), nullable=False)
     customer_address = Column(String(500), nullable=False)
     platform_name = Column(String(255), nullable=False)
-    payment_type = Column(Enum("COD", "UPI", name="payment_enum"), nullable=False)
+    order_payment_type = Column(
+        Enum(*settings.ORDER_PAYMENT_TYPE, name="payment_enum"), nullable=False
+    )
     total_amount = Column(Float, nullable=False)
     customer_remark = Column(String)
     admin_remark = Column(String)
     order_status = Column(
-        Enum(settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
+        Enum(settings.ORDER_STATUS_ENUM, name="status_enum"),
+        default=settings.ORDER_STATUS_ENUM[0],
     )
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
