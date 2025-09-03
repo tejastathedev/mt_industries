@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, CheckConstraint, DateTime, func, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, CheckConstraint, DateTime, func, Enum, Float
 from sqlalchemy.orm import relationship
 from database import Base
 from users.schema import Constants
@@ -25,17 +25,40 @@ class Company(Base):
     deletion_date = Column(DateTime, default=func.now())
 
     users = relationship('User', back_populates='company')
-    created_by_user = relationship('User', foreign_keys=[created_by])
-    updated_by_user = relationship('User', foreign_keys=[updated_by])
-    deleted_by_user = relationship('User', foreign_keys=[deleted_by])
-
+    warehouses = relationship('Warehouse', back_populates='company')
 
 
     __table_args__ = CheckConstraint(
         "length(phone) = 10 AND phone GLOB '[0-9]*'", 
         name="company_phone_check_constraint"
     )
-    
+
+# Warehouse table schema docs:
+# id -> pk, autoincrement
+# company_id : relationship with companies.id
+# location parameter: latitude , longitude, address
+# warehouse related columns: warehouse_name, warehouse_manager, details
+class Warehouse(Base):
+    __tablename__ = 'warehouses'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    company_id = Column(Integer, ForeignKey('companies.id'))
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    address = Column(String, nullable=False)
+    warehouse_name = Column(String, nullable=False)
+    warehouse_manager = Column(String)
+    details = Column(String)
+    status = Column(Enum('live', 'deleted', name='status_enum'), default=Constants.live)
+    creation_date = Column(DateTime, default=func.now())
+    created_by = Column(Integer, ForeignKey('users.id'))
+    updated_by = Column(Integer, ForeignKey('users.id'))
+    updation_date = Column(DateTime, default=func.now(), onupdate=func.now())
+    deleted_by = Column(Integer, ForeignKey('users.id'))
+    deletion_date = Column(DateTime)
+
+    company = relationship('Company', back_populates='warehouses')
+
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -49,7 +72,7 @@ class User(Base):
     scope_id = Column(Integer, ForeignKey('userscopes.id'))
     company_id = Column(Integer, ForeignKey('companies.id'))
     otp = Column(Integer)
-    status = Column(Enum('live', 'deleted', name='user_status_enum'), default=Constants.live)
+    status = Column(Enum('live', 'deleted', name='status_enum'), default=Constants.live)
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey('users.id'))
     updated_by = Column(Integer, ForeignKey('users.id'))
@@ -59,14 +82,6 @@ class User(Base):
 
     scope = relationship('UserScope', back_populates='users', uselist=False)
     company = relationship('Company', back_populates='users', uselist=False)
-
-    created_by_user = relationship('User', remote_side=[id], foreign_keys=[created_by], post_update=True)
-    updated_by_user = relationship('User', remote_side=[id], foreign_keys=[updated_by], post_update=True)
-    deleted_by_user = relationship('User', remote_side=[id], foreign_keys=[deleted_by], post_update=True)
-
-    created_orders = relationship('Order', foreign_keys=[Order.created_by], back_populates='created_by_user')
-    updated_orders = relationship('Order', foreign_keys=[Order.updated_by], back_populates='updated_by_user')
-    deleted_orders = relationship('Order', foreign_keys=[Order.deleted_by], back_populates='deleted_by_user')
 
     __table_args__ = (
         CheckConstraint("length(phone) = 10 AND phone GLOB '[0-9]*'", name="user_phone_check_constraint"),

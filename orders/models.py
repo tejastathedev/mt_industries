@@ -3,6 +3,19 @@ from sqlalchemy.orm import relationship, validates
 from database import Base
 from orders.schema import Constants
 
+# Columns that are common in most of the tables :-
+# status, creation_date, created_by, updation_date, updated_by, deletion_time, deleted_by
+
+
+
+
+# Orders table schema docs:
+# Table Name : Orders
+# ID -> PK, auto incremented 
+# Customer Related columns -> customer_name, customer_phone, customer_mail, customer_address, customer_remark
+# Payment Related Columns -> payment_type, total_amount (calculated by orderproducts table)
+# Order Related Columns - > platform_name, order_status
+# Other misc columns -> admin_remark
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -15,8 +28,10 @@ class Order(Base):
     total_amount = Column(Float, nullable=False)
     customer_remark = Column(String)
     admin_remark = Column(String)
-    order_status = Column(Enum('ordered', 'delivered', 'cancelled', 'returned', name='order_status_enum'), default=Constants.ordered)
-    order_date = Column(DateTime, default=func.now(), nullable=False)
+    order_status = Column(Enum('ordered', 'delivered', 'cancelled', 'returned', 'rejected', name='order_status_enum'), default=Constants.ordered)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    # order_date = Column(DateTime, default=func.now(), nullable=False) #Removed the order date column as it was duplicated in creation date
     status = Column(Enum('live', 'deleted', name='order_status_enum'), default=Constants.live)
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey('users.id'))
@@ -26,11 +41,16 @@ class Order(Base):
     deletion_date = Column(DateTime)
 
     orderproducts = relationship('OrderProduct', back_populates='order')
-    
-    created_by_user = relationship('User', foreign_keys=[created_by])
-    updated_by_user = relationship('User', foreign_keys=[updated_by])
-    deleted_by_user = relationship('User', foreign_keys=[deleted_by])
 
+
+
+# orderproducts table schema docs:
+# id : primary_key, autoincrement
+# Relation with orders table:- order_id (referenced to orders.id)
+# Relation with products table:- product_id (refernced to products.id)
+# Base Product's price calculation :- product_purchase_price, quantity, total_amount (product_purchase_price * quantity)
+# Discount Calculation :- discount(value not percentage), Using @validates to calculate discounted_amount
+# Organizational benefits :- Profit_amount (store profit from [product_id.(selling_price - cost_price)*quantity])
 class OrderProduct(Base):
     __tablename__ = 'orderproducts'
     id = Column(Integer, primary_key=True, autoincrement=True)
