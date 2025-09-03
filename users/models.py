@@ -11,7 +11,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from database import Base
-from users.schema import Constants
 from orders.models import Order
 from config import settings
 

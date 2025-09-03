@@ -30,15 +30,7 @@ class Order(Base):
     customer_remark = Column(String)
     admin_remark = Column(String)
     order_status = Column(
-        Enum(
-            "ordered",
-            "delivered",
-            "cancelled",
-            "returned",
-            "rejected",
-            name="order_status_enum",
-        ),
-        default=Constants.ordered,
+        Enum(settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
     )
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)

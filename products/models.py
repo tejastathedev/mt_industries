@@ -10,7 +10,6 @@ from sqlalchemy import (
     Float,
 )
 from sqlalchemy.orm import relationship
-from products.schema import Constants
 from config import settings
 from database import Base
 

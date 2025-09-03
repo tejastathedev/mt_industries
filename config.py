@@ -6,5 +6,6 @@ load_dotenv()
 
 class Settings:
     STATUS_ENUM = os.getenv("STATUS_ENUM", "active,deleted").split(",")
+    ORDER_STATUS_ENUM = os.getenv("ORDER_STATUS_ENUM", "pending,dispatched,delivered,returned,rejected,cancelled").split(",")
 
 settings = Settings()
