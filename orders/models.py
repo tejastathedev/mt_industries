@@ -12,7 +12,7 @@ from config import settings
 # Table Name : Orders
 # ID -> PK, auto incremented
 # Customer Related columns -> customer_name, customer_phone, customer_mail, customer_address, customer_remark
-# Payment Related Columns -> payment_type, total_amount (calculated by orderproducts table)
+# Payment Related Columns -> payment_type, total_amount (calculated by order_products table)
 # Order Related Columns - > platform_name, order_status
 # Other misc columns -> admin_remark
 
@@ -45,10 +45,10 @@ class Order(Base):
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
-    orderproducts = relationship("OrderProduct", back_populates="order")
+    order_products = relationship("OrderProduct", back_populates="order")
 
 
-# orderproducts table schema docs:
+# order_products table schema docs:
 # id : primary_key, autoincrement
 # Relation with orders table:- order_id (referenced to orders.id)
 # Relation with products table:- product_id (refernced to products.id)
@@ -58,7 +58,7 @@ class Order(Base):
 
 
 class OrderProduct(Base):
-    __tablename__ = "orderproducts"
+    __tablename__ = "order_products"
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
     product_id = Column(Integer, ForeignKey("products.id"))
@@ -69,9 +69,9 @@ class OrderProduct(Base):
     discounted_amount = Column(Float, default=0.0)
     profit_amount = Column(Float, nullable=False)
 
-    order = relationship("Order", back_populates="orderproducts")
+    order = relationship("Order", back_populates="order_products")
     product = relationship(
-        "Product", back_populates="orderproducts", foreign_keys=[product_id]
+        "Product", back_populates="order_products", foreign_keys=[product_id]
     )
 
     @validates("discount")
