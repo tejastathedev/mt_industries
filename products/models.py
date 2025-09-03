@@ -10,8 +10,9 @@ from sqlalchemy import (
     Float,
 )
 from sqlalchemy.orm import relationship
-from config import settings
 from database import Base
+from config import settings
+
 
 
 class Units(Base):
@@ -25,7 +26,7 @@ class Units(Base):
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, donupdate=func.now())
+    updation_date = Column(DateTime, onupdate=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
@@ -115,10 +116,10 @@ class Products(Base):
     categories = relationship("Categories", back_populates="products")
     weight_units = relationship("WeightUnits", back_populates="products")
     units = relationship("Units", back_populates="products")
-    orderproducts = relationship("OrderProduct", back_populates="products")
     product_stock_history = relationship(
         "ProductStockHistory", back_populates="products"
     )
+    order_products = relationship("OrderProduct", back_populates="product")
 
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
@@ -155,3 +156,4 @@ class ProductStockHistory(Base):
     deletion_date = Column(DateTime)
 
     products = relationship("Products", back_populates="product_stock_history")
+

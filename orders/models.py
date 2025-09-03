@@ -1,7 +1,6 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func
+from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func, Text
 from sqlalchemy.orm import relationship, validates
 from database import Base
-from orders.schema import Constants
 from config import settings
 
 # Columns that are common in most of the tables :-
@@ -61,7 +60,7 @@ class OrderProduct(Base):
     __tablename__ = "orderproducts"
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
+    # product_id = Column(Integer, ForeignKey("products.id"))
     product_purchase_price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
     total_amount = Column(Integer, nullable=False)
@@ -70,9 +69,9 @@ class OrderProduct(Base):
     profit_amount = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="orderproducts")
-    # products = relationship(
-    #     "Products", back_populates="orderproducts"
-    # )
+    product = relationship(
+        "Products", back_populates="order_products"
+    )
 
     @validates("discount")
     def calculate_discounted_amount(self, key, discount):
