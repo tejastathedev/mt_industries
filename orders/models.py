@@ -30,13 +30,13 @@ class Order(Base):
     customer_remark = Column(String)
     admin_remark = Column(String)
     order_status = Column(
-        Enum(settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
+        Enum(*settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
     )
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     # order_date = Column(DateTime, default=func.now(), nullable=False) #Removed the order date column as it was duplicated in creation date
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -70,9 +70,9 @@ class OrderProduct(Base):
     profit_amount = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="orderproducts")
-    product = relationship(
-        "Product", back_populates="orderproducts", foreign_keys=[product_id]
-    )
+    # products = relationship(
+    #     "Products", back_populates="orderproducts"
+    # )
 
     @validates("discount")
     def calculate_discounted_amount(self, key, discount):

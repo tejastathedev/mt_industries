@@ -20,7 +20,7 @@ class Units(Base):
     name = Column(String, nullable=False)
 
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -38,7 +38,7 @@ class WeightUnits(Base):
     name = Column(String, nullable=False)
 
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -58,7 +58,7 @@ class Categories(Base):
     description = Column(String, nullable=False)
 
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -78,7 +78,7 @@ class DimensionUnits(Base):
     description = Column(String, nullable=False)
 
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -115,13 +115,13 @@ class Products(Base):
     categories = relationship("Categories", back_populates="products")
     weight_units = relationship("WeightUnits", back_populates="products")
     units = relationship("Units", back_populates="products")
-    orderproducts = relationship("OrderProduct", back_populates="product")
+    orderproducts = relationship("OrderProduct", back_populates="products")
     product_stock_history = relationship(
         "ProductStockHistory", back_populates="products"
     )
 
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -145,7 +145,7 @@ class ProductStockHistory(Base):
     prev_stock = Column(Float, nullable=False)
     current_stock = Column(Float, nullable=False)
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))

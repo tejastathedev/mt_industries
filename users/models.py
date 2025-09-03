@@ -29,7 +29,7 @@ class Company(Base):
     mail = Column(String, nullable=False, unique=False)
     phone = Column(String, nullable=False, unique=True)
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -41,9 +41,11 @@ class Company(Base):
     users = relationship("User", back_populates="company")
     warehouses = relationship("Warehouse", back_populates="company")
 
-    __table_args__ = CheckConstraint(
-        "length(phone) = 10 AND phone GLOB '[0-9]*'",
-        name="company_phone_check_constraint",
+    __table_args__ = (
+        CheckConstraint(
+            "length(phone) = 10 AND phone GLOB '[0-9]*'",
+            name="company_phone_check_constraint",
+        ),
     )
 
 
@@ -65,7 +67,7 @@ class Warehouse(Base):
     warehouse_manager = Column(String)
     details = Column(String)
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -91,7 +93,7 @@ class User(Base):
     company_id = Column(Integer, ForeignKey("companies.id"))
     otp = Column(Integer)
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
