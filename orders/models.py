@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func
+from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func, Text
 from sqlalchemy.orm import relationship, validates
 from database import Base
 from config import settings
@@ -31,14 +31,13 @@ class Order(Base):
     customer_remark = Column(String)
     admin_remark = Column(String)
     order_status = Column(
-        Enum(settings.ORDER_STATUS_ENUM, name="status_enum"),
-        default=settings.ORDER_STATUS_ENUM[0],
+        Enum(*settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
     )
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     # order_date = Column(DateTime, default=func.now(), nullable=False) #Removed the order date column as it was duplicated in creation date
     status = Column(
-        Enum(settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
+        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -63,7 +62,7 @@ class OrderProduct(Base):
     __tablename__ = "order_products"
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
-    product_id = Column(Integer, ForeignKey("products.id"))
+    # product_id = Column(Integer, ForeignKey("products.id"))
     product_purchase_price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
     total_amount = Column(Integer, nullable=False)
@@ -73,7 +72,7 @@ class OrderProduct(Base):
 
     order = relationship("Order", back_populates="order_products")
     product = relationship(
-        "Product", back_populates="order_products", foreign_keys=[product_id]
+        "Products", back_populates="order_products"
     )
 
     @validates("discount")
