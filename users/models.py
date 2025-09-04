@@ -19,6 +19,8 @@ class UserScope(Base):
     __tablename__ = "userscopes"
     id = Column(Integer, primary_key=True, autoincrement=True)
     scope_name = Column(String, nullable=False)
+
+
     users = relationship("User", back_populates="scopes")
 
 
@@ -36,9 +38,9 @@ class Company(Base):
     updated_by = Column(Integer, ForeignKey("users.id"))
     updation_date = Column(DateTime, default=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))
-    deletion_date = Column(DateTime, default=func.now())
+    deletion_date = Column(DateTime)
 
-    users = relationship("User", back_populates="company")
+    users = relationship("User", back_populates="company", foreign_keys="[User.company_id]")
     warehouses = relationship("Warehouse", back_populates="company")
 
     __table_args__ = (
@@ -72,7 +74,7 @@ class Warehouse(Base):
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, default=func.now(), onupdate=func.now())
+    updation_date = Column(DateTime, onupdate=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
@@ -102,8 +104,8 @@ class User(Base):
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
-    scope = relationship("UserScope", back_populates="users", uselist=False)
-    company = relationship("Company", back_populates="users", uselist=False)
+    scopes = relationship("UserScope", back_populates="users", uselist=False)
+    company = relationship("Company", back_populates="users", uselist=False, foreign_keys=[company_id])
 
     __table_args__ = (
         CheckConstraint(
