@@ -11,3 +11,7 @@ company_router = APIRouter(prefix="/company", tags=["Company Routs"])
 def add_company(payload: RegisterCompanySchema, db: Session = Depends(get_db)):
     company_data = register_company(payload, db)
     return {"data": company_data}
+
+
+def bullshit():
+    pass
