@@ -31,7 +31,6 @@ class TokenData(BaseModel):
 # Defining utility functions for password hashing and verifying
 
 def verify_pass(plain_pass : str, hashed_pass : str)-> bool:
-    print(plain_pass, " <--  -->", hashed_pass)
     return pwd_context.verify(plain_pass, hashed_pass)
 
 def get_pass_hash(plain_pass : str) -> str:
@@ -49,7 +48,6 @@ def authenticate_user_pass(mail : str, password : str, db : Session):
         return False
     hashed_pass = user.password
     if not verify_pass(password, hashed_pass):
-        print("hash not matching, ", )
         return False
     
     if user.status != settings.STATUS_ENUM[0]:

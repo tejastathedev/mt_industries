@@ -86,7 +86,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
-    phone = Column(String(15), nullable=False, unique=True)
+    phone = Column(String(15), nullable=False)
     mail = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     access_token = Column(String(32))
