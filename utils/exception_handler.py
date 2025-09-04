@@ -18,13 +18,23 @@ class ExceptionHandler:
         if isinstance(exc, IntegrityError):
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                content={"detail": settings.DUPLICATE_DATA_ERROR.format(error=str(exc))},
+                content={"detail_integrity": settings.DUPLICATE_DATA_ERROR.format(error=str(exc))},
             )
 
         if isinstance(exc, DatabaseError):
+            # print("Exception caught: ",DatabaseError.statement)
+            # return JSONResponse(
+            #     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            #     content={"detail": DatabaseError.statement},
+            # )
+            # Now we access the statement and params from the actual exception instance
+            print("Exception caught:", exc.statement, exc.params)
+
             return JSONResponse(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                content={"detail": settings.DATABASE_ERROR.format(error=str(exc))},
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={
+                    "detail": str(exc.statement),
+                },
             )
 
         # Fallback for unexpected errors
