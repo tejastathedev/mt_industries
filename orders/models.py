@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTim
 from sqlalchemy.orm import relationship, validates
 from database import Base
 from config import settings
+from products.models import Products
 
 # Columns that are common in most of the tables :-
 # status, creation_date, created_by, updation_date, updated_by, deletion_time, deleted_by
@@ -62,7 +63,7 @@ class OrderProduct(Base):
     __tablename__ = "order_products"
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
-    # product_id = Column(Integer, ForeignKey("products.id"))
+    product_id = Column(Integer, ForeignKey("products.id"))
     product_purchase_price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
     total_amount = Column(Integer, nullable=False)
