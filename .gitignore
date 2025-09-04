@@ -1,4 +1,44 @@
-# environment 
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
 
+# Virtual environment
+env/
+venv/
+ENV/
+.venv/
 
-env
+# Environment files
+.env
+*.env
+
+# Databases
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Byte-compiled / packages
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Unit test / coverage reports
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Other
+*.bak
