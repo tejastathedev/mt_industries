@@ -19,4 +19,4 @@ def register_all_scopes(db : Session = Depends(get_db)):
 @user_router.post('/register')
 def register_user(input : RegisterSchema, db : Session = Depends(get_db)):
     return register_user_in_db(input, db)
-# Changed comment
+# Changed commentik
