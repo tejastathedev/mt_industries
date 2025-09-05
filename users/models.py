@@ -42,7 +42,7 @@ class Company(Base):
 
 
     # Relationships
-    users = relationship("User", back_populates="company", foreign_keys="[User.company_id]")
+    # users = relationship("User", back_populates="company", foreign_keys="[User.company_id]")
     warehouses = relationship("Warehouse", back_populates="company")
 
     __table_args__ = (
@@ -83,6 +83,8 @@ class Warehouse(Base):
     # Relationships
 
     company = relationship("Company", back_populates="warehouses")
+    users = relationship("User", back_populates="warehouse", foreign_keys="[User.warehouse_id]")
+
 
 
 class User(Base):
@@ -96,7 +98,8 @@ class User(Base):
     access_token = Column(String(32))
     refresh_token = Column(String(32))
     scope_id = Column(Integer, ForeignKey("userscopes.id"))
-    company_id = Column(Integer, ForeignKey("companies.id"))
+    # company_id = Column(Integer, ForeignKey("companies.id")) # replaced_with warehouse id 
+    warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
     otp = Column(Integer)
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
@@ -110,7 +113,9 @@ class User(Base):
 
     # Relationships
     scopes = relationship("UserScope", back_populates="users", uselist=False)
-    company = relationship("Company", back_populates="users", uselist=False, foreign_keys=[company_id])
+    # company = relationship("Company", back_populates="users", uselist=False, foreign_keys=[company_id])
+    warehouse = relationship("Warehouse", back_populates="users", uselist=False, foreign_keys=[warehouse_id])
+
 
     __table_args__ = (
         CheckConstraint(
