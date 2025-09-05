@@ -106,16 +106,25 @@ def decode_token(token:str):
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         return payload
-    except JWTError as je:
-        raise je
+    except JWTError :
+        raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+          detail="Could not validate token",
+            headers={"WWW-Authenticate" : "Bearer"}
+        )
 
-async def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(get_db))->bool:
+def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(get_db))->str:
     credential_error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
           detail="Could not validate token",
             headers={"WWW-Authenticate" : "Bearer"}
         )
     try:
+        # check in database if the token is present?
+        user = db.query(User).filter(User.access_token == token).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="unAuthenticated")
+        print("validation has hit")
         payload = decode_token(token)
         user_mail : str = payload.get("sub")
         if user_mail is None:
@@ -127,7 +136,7 @@ async def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Dep
     user_in_db = get_user(token_data.mail, db)   
     if user_in_db is None or user_in_db.status != settings.STATUS_ENUM[0]:
         raise credential_error
-    return True
+    return token
 
 
 
