@@ -5,7 +5,7 @@ from sqlalchemy import (
     Enum,
     DateTime,
     ForeignKey,
-    func,
+    func
 )
 from database import Base
 from sqlalchemy.orm import relationship

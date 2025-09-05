@@ -1,3 +1,4 @@
+
 from fastapi import status, HTTPException
 from config import settings
 from .models import Company
@@ -44,3 +45,4 @@ def register_company(payload, db):
 def get_companies(db):
     companies=db.query(Company).all()
     return companies
+

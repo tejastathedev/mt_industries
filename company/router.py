@@ -6,7 +6,6 @@ from .services import register_company, login, get_companies
 from auth.tokenEssentials import validate_token
 from fastapi.security import OAuth2PasswordRequestForm
 
-
 company_router = APIRouter(prefix="/company", tags=["Company Routs"])
 
 

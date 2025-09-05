@@ -90,6 +90,7 @@ class User(Base):
     warehouse = relationship("Warehouse", back_populates="users", uselist=False, foreign_keys=[warehouse_id])
 
 
+
     __table_args__ = (
         CheckConstraint(
             "length(phone) = 10 AND phone GLOB '[0-9]*'",
