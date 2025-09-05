@@ -6,7 +6,6 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     func,
-    CheckConstraint,
 )
 from database import Base
 from sqlalchemy.orm import relationship
@@ -26,7 +25,7 @@ class Company(Base):
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, default=func.now())
+    updation_date = Column(DateTime, onupdate=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
@@ -35,10 +34,3 @@ class Company(Base):
         "User", back_populates="company", foreign_keys="[User.company_id]"
     )
     warehouses = relationship("Warehouse", back_populates="company")
-
-    __table_args__ = (
-        CheckConstraint(
-            "length(phone) = 10 AND phone GLOB '[0-9]*'",
-            name="company_phone_check_constraint",
-        ),
-    )
