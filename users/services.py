@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from users.models import UserScope, User
 from sqlalchemy.exc import DatabaseError
 from auth.tokenEssentials import get_pass_hash,verify_pass
 from passlib.context import CryptContext
-from .models import User, UserScope
+from .models import User, UserScope,Company
 from . import schema
 
 #this function for reusable we dont need to write commit
@@ -91,9 +92,60 @@ def update_user(email: str, password: str, update:schema.UserUpdate, db: Session
 
 #deletion User Details
 def delete_user(email:str,password:str, db:Session):
-    user = db.query(User).filter(User.email==email).first()
+    user = db.query(User).filter(User.mail==email).first()
     if not user or not verify_pass(password,user.password):
         raise Exception("Invalid credential")
     db.delete(user)
     db.commit()
     return {"message":"User Delete Successfully"}
+
+
+
+#Company Services:
+
+def companycreation(company : schema.CompanyCreation,db:Session):
+    existingcompany = db.query(Company).filter(Company.mail==company.mail).first()
+    if existingcompany:
+        raise Exception("Invalid Credential")
+    new_company = Company(
+        name = company.name,
+        mail = company.mail,
+        phone = company.phone,
+        status = company.status,
+        password = company.password,
+        created_by = company.created_by,
+        creation_date = company.creation_date
+    )
+
+    db.add(new_company)
+    db.commit()
+    db.refresh(new_company)
+    return {"message": "The Company Created Successfully"}
+
+def showcompany(email:str,password:str,update:schema.Companyupdation,db:Session):
+    company = db.query(Company).filter(Company.mail==email).first()
+    if not company or verify_pass(password,company.password):
+        raise Exception("Invalid Credential")
+
+def companyupdation(email:str,password:str,update:schema.Companyupdation,db:Session):
+    company = db.query(Company).filter(Company.mail==email).first()
+    if not company or verify_pass(password,company.password):
+        raise Exception("Invalid Credential")
+    company.name=update.name,
+    company.password = update.password,
+    company.phone = update.phone,
+    company.status = update.status,
+    company.updated_by =update.updated_by,
+    company.updation_date =update.updation_date
+    
+    db.commit()
+    db.refresh(company)
+    return {"message":"The updation done successfully"}
+  
+def companydeletion(email:str,password:str,db:Session):
+    company = db.query(Company).filter(company.mail==email).first()
+    if not company or verify_pass(password, company.password):
+        raise Exception("Invalid Credentials")
+    
+    db.delete(company)
+    return {"message": "The account deleted successfully"}

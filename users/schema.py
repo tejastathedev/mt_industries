@@ -25,12 +25,19 @@ class CompanyBase(BaseModel):
     status: Optional[str] = None
     
 
-class CompanyCreation(BaseModel):
+class CompanyCreation(CompanyBase):
+    created_by : int
+    password:str
     creation_date:datetime
-    # created_by:int
 
+class Companyupdation(CompanyBase):
+    password:str
+    updated_by:int
+    updation_date:datetime
+    
 class CompanyResponse(CompanyBase):
     id: int
+    created_by:int
     creation_date: datetime
 
     class Config:

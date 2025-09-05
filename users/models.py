@@ -36,6 +36,7 @@ class Company(Base):
     name = Column(String, nullable=False, unique=True)
     mail = Column(String, nullable=False)  # Allow duplicate mails (?)
     phone = Column(String, nullable=False, unique=True)
+    password = Column(String,nullable=False)
     
 
     status = Column(

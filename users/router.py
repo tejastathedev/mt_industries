@@ -1,12 +1,41 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from users.services import register_scopes,register_users,update_user,get_user_info,delete_user,showscopes
+from users.services import register_scopes,register_users,update_user,get_user_info,delete_user,showscopes,companycreation
 from . import schema
 
 user_router = APIRouter(prefix='/user', tags=['user'])
+company_router = APIRouter(prefix='/company',tags=['company'])
+
+#company Creation
+
+@company_router.put("/companyCreation")
+def company_creation(company:schema.CompanyCreation,db:Session=Depends(get_db)):
+    return companycreation(company,db)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#user routes
 @user_router.post('/pushAllScopes')
 def register_all_scopes(db : Session = Depends(get_db)):
     return register_scopes(db)
