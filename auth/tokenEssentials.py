@@ -125,6 +125,7 @@ def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(g
         user = db.query(User).filter(User.access_token == token).first()
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="unAuthenticated")
+
         payload = decode_token(token)
         user_mail : str = payload.get("sub")
         if user_mail is None:
@@ -137,7 +138,6 @@ def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(g
     if user_in_db is None or user_in_db.status != settings.STATUS_ENUM[0]:
         raise credential_error
     return token
-
 
 def validate_company_token(token : str = Depends(Oauth2Scheme1), db : Session = Depends(get_db))->str:
     credential_error = HTTPException(

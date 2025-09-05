@@ -35,6 +35,7 @@ class UserScope(Base):
 
 
 
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -46,6 +47,7 @@ class User(Base):
     access_token = Column(String(32))
     refresh_token = Column(String(32))
     scope_id = Column(Integer, ForeignKey("userscopes.id"))
+
     warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
     otp = Column(Integer)
     status = Column(
