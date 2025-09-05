@@ -70,3 +70,19 @@ class OrderProduct(Base):
     def calculate_discounted_amount(self, key, discount):
         self.discounted_amount = self.total_amount - discount
         return discount
+
+
+#this is a payment status table 
+# which will keep track of the payment status of the order
+#payment_id --> primary key, autoincrement
+#order_id --> foreign key, references orders.id
+
+class Payment(Base):
+    __tablename__ = "payment_status"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    order_id = Column(Integer, ForeignKey('Order.order_id'))
+    payment_status = Column(Enum('pending', 'completed', 'failed', name='payment_status_enum'), default=Constants.pending)
+    payment_status_date = Column(DateTime, default =func.now())
+
+    
