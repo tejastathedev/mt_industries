@@ -3,6 +3,8 @@ from extras.models import CompanyOTP
 from random import choices
 from fastapi import HTTPException, status
 
+# OTP related Functions
+
 def generateOTPFunc():
     otp = ''.join(choices('0123456789', k=4))
     print(otp)
@@ -23,6 +25,8 @@ def updateOTP(company_id : int, otp : str, db : Session):
             db.query(CompanyOTP).filter(CompanyOTP.company_id == company_id).update({'generationHits' : otp_record.generationHits+1})
             db.commit()
             return True
+        # Check if this generation hit has been hit after 1 hour of (otp creation date), then 
+        # Change the creation hit to current generation hit time !
         db.query(CompanyOTP).filter(CompanyOTP.company_id == company_id).update({'status' : 'blocked'})
         db.commit()
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="You cannot generate more than 3 otps at a time")
@@ -67,3 +71,9 @@ def deleteOTPRecord(company_id : int, db : Session):
     db.delete(record)
     db.commit()
     return True
+
+# Captcha Related Functions
+
+def captchaGeneration():
+    captcha = ''.join(choices("abcdefghijklmnopqrstuvwxyz1234567890", k=6))
+    return captcha

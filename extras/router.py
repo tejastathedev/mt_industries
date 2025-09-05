@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from extras.services import generateOTPFunc, updateOTP, fetchOTP, CompareOTP, IncreaseOTPHit, deleteOTPRecord
-from extras.schema import OTPSchema, GetOTP
+from extras.services import generateOTPFunc, updateOTP, fetchOTP, CompareOTP, IncreaseOTPHit, deleteOTPRecord, captchaGeneration
+from extras.schema import OTPSchema, GetOTP, CaptchaSchema
 
 
 extra_router = APIRouter(prefix="/ex", tags=['ex'])
@@ -32,3 +32,19 @@ def validateOTP(otp : OTPSchema, db : Session = Depends(get_db)):
     # Delete the otp record so that this otp cannot be used again
     deleteOTPRecord(otp.company_id, db)
     return {"message" : "OTP validated"}
+
+
+# Captcha Endpoints 
+@extra_router.get('/getcapthca')
+def GetCaptcha():
+    captcha = captchaGeneration()
+    return {
+        "captcha" : captcha
+    }
+
+@extra_router.post('/validateCaptcha')
+def validateCaptcha(user_captcha : CaptchaSchema):
+    if(user_captcha.captcha_typed == user_captcha.original_captcha):
+        return {'message' : "Captcha Verified"}
+    return {'message' : "Filled Captcha is Wrong"}
+    
