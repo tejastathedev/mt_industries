@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from users.models import User
+from company.models import Company
 from database import get_db
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
@@ -44,7 +45,7 @@ def get_user(mail : str, db : Session):
 
 def authenticate_user_pass(mail : str, password : str, db : Session):
     user = get_user(mail, db)
-    if not User:
+    if not user:
         return False
     hashed_pass = user.password
     if not verify_pass(password, hashed_pass):
@@ -53,6 +54,23 @@ def authenticate_user_pass(mail : str, password : str, db : Session):
     if user.status != settings.STATUS_ENUM[0]:
         raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail=f"User is {user.status}")
     return user
+
+# Defining functions to do Database operations needed for JWT
+def get_company(mail : str, db : Session):
+    company = db.query(Company).filter(Company.email == mail).first()
+    return company if company else None
+
+def authenticate_company_pass(mail : str, password : str, db : Session):
+    company = get_company(mail, db)
+    if not company:
+        return False
+    hashed_pass = company.password
+    if not verify_pass(password, hashed_pass):
+        return False
+    
+    if company.status != settings.STATUS_ENUM[0]:
+        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail=f"User is {company.status}")
+    return company
 
 
 # Access Token Creation Function
