@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from users.models import User
+from company.models import Company
 from database import get_db
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
@@ -44,7 +45,7 @@ def get_user(mail : str, db : Session):
 
 def authenticate_user_pass(mail : str, password : str, db : Session):
     user = get_user(mail, db)
-    if not User:
+    if not user:
         return False
     hashed_pass = user.password
     if not verify_pass(password, hashed_pass):
@@ -53,6 +54,23 @@ def authenticate_user_pass(mail : str, password : str, db : Session):
     if user.status != settings.STATUS_ENUM[0]:
         raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail=f"User is {user.status}")
     return user
+
+# Defining functions to do Database operations needed for JWT
+def get_company(mail : str, db : Session):
+    company = db.query(Company).filter(Company.email == mail).first()
+    return company if company else None
+
+def authenticate_company_pass(mail : str, password : str, db : Session):
+    company = get_company(mail, db)
+    if not company:
+        return False
+    hashed_pass = company.password
+    if not verify_pass(password, hashed_pass):
+        return False
+    
+    if company.status != settings.STATUS_ENUM[0]:
+        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail=f"User is {company.status}")
+    return company
 
 
 # Access Token Creation Function
@@ -88,16 +106,25 @@ def decode_token(token:str):
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         return payload
-    except JWTError as je:
-        raise je
+    except JWTError :
+        raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+          detail="Could not validate token",
+            headers={"WWW-Authenticate" : "Bearer"}
+        )
 
-async def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(get_db))->bool:
+def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(get_db))->str:
     credential_error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
           detail="Could not validate token",
             headers={"WWW-Authenticate" : "Bearer"}
         )
     try:
+        # check in database if the token is present?
+        user = db.query(User).filter(User.access_token == token).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="unAuthenticated")
+        print("validation has hit")
         payload = decode_token(token)
         user_mail : str = payload.get("sub")
         if user_mail is None:
@@ -109,7 +136,7 @@ async def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Dep
     user_in_db = get_user(token_data.mail, db)   
     if user_in_db is None or user_in_db.status != settings.STATUS_ENUM[0]:
         raise credential_error
-    return True
+    return token
 
 
 
