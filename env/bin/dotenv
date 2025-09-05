@@ -1,4 +1,6 @@
-#!/home/epps/mt_industries/env/bin/python3
+#!/bin/sh
+'''exec' "/home/epp/case studies/project/mt_industries/env/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys
