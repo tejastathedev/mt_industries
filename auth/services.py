@@ -6,10 +6,11 @@ from auth.tokenEssentials import Token, validate_token, decode_token, authentica
 
 from sqlalchemy.orm import Session
 from users.models import User
+from auth.tokenEssentials import authenticate_company_pass, create_access_token, create_refresh_token, TokenWithRefresh
 
 def login(form_data, db):
     # Authenticate the user with thier credentials
-    user = authenticate_user_pass(form_data.username, form_data.password, db)
+    user = authenticate_company_pass(form_data.username, form_data.password, db)
     # Raising an error if the user has incorrect credentials
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect Login Credentials")

@@ -7,7 +7,7 @@ from extras.router import extra_router
 
 from warehouse.router import warehouse_router
 from utils.exception_handler import ExceptionHandler
-# from cron_jobs.scheduler import init_scheduler
+from cron_jobs.scheduler import init_scheduler
 
 
 app = FastAPI()
