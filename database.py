@@ -3,10 +3,10 @@ from sqlalchemy import create_engine
 engine = create_engine("sqlite:///mt.db")
 
 Base = declarative_base()
-sessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
       
 def get_db():
-    db: Session = sessionLocal()
+    db: Session = SessionLocal()
     try:
         yield db
         db.commit()
