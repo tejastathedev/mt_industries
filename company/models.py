@@ -31,3 +31,4 @@ class Company(Base):
 
     # Relationships
     warehouses = relationship("Warehouse", back_populates="company")
+    otp = relationship("CompanyOTP", back_populates='company')
