@@ -1,4 +1,3 @@
-
 from fastapi import status, HTTPException
 from config import settings
 from .models import Company
@@ -16,8 +15,11 @@ def login(form_data, db):
     user = authenticate_company_pass(form_data.username, form_data.password, db)
     # Raising an error if the user has incorrect credentials
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect Login Credentials")
-    
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect Login Credentials",
+        )
+
     # update access and refresh token in database
     access_token = create_access_token(form_data.username, db)
     refresh_token = create_refresh_token(form_data.username, db)
@@ -26,8 +28,8 @@ def login(form_data, db):
     return TokenWithRefresh(
         access_token=access_token,
         token_type="bearer",
-        expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES*60,
-        refresh_token=refresh_token
+        expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        refresh_token=refresh_token,
     )
 
 
@@ -41,8 +43,3 @@ def register_company(payload, db):
     db.add(company)
     db.commit()
     return "Company added successfully...!"
-
-def get_companies(db):
-    companies=db.query(Company).all()
-    return companies
-
