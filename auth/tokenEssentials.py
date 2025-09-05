@@ -14,6 +14,7 @@ from database import get_db
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
 Oauth2Scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+Oauth2Scheme1 = OAuth2PasswordBearer(tokenUrl="/company/token")
 
 # Creating basic schema to store token and its details
 #  which are needed to be accessed later in the authentication process
@@ -124,7 +125,7 @@ def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(g
         user = db.query(User).filter(User.access_token == token).first()
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="unAuthenticated")
-        print("validation has hit")
+
         payload = decode_token(token)
         user_mail : str = payload.get("sub")
         if user_mail is None:
@@ -138,5 +139,27 @@ def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(g
         raise credential_error
     return token
 
+def validate_company_token(token : str = Depends(Oauth2Scheme1), db : Session = Depends(get_db))->str:
+    credential_error = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+          detail="Could not validate token",
+            headers={"WWW-Authenticate" : "Bearer"}
+        )
+    try:
+        # check in database if the token is present?
+        # user = db.query(User).filter(User.access_token == token).first()
+        # if not user:
+        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="company unAuthenticated")
+        payload = decode_token(token)
+        user_mail : str = payload.get("sub")
+        if user_mail is None:
+            raise credential_error
+        token_data = TokenData(mail=user_mail)
+    except JWTError:
+        return credential_error
 
+    company_details = get_company(token_data.mail, db)   
+    if company_details is None or company_details.status != settings.STATUS_ENUM[0]:
+        raise credential_error
+    return company_details.id
 
