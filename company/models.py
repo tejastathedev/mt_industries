@@ -30,7 +30,4 @@ class Company(Base):
     deletion_date = Column(DateTime)
 
     # Relationships
-    users = relationship(
-        "User", back_populates="company", foreign_keys="[User.company_id]"
-    )
     warehouses = relationship("Warehouse", back_populates="company")
