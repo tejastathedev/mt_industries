@@ -1,14 +1,24 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
+from ..config  import settings
 
+
+
+# Create Enum dynamically from ORDER_STATUS_ENUM
 class OrderStatusEnum(str, Enum):
+    # Dynamically assign enum values
+    # Example: pending, dispatched, delivered, returned, rejected, cancelled
     pending = "pending"
     dispatched = "dispatched"
     delivered = "delivered"
     returned = "returned"
     rejected = "rejected"
     cancelled = "cancelled"
+
+    @classmethod
+    def choices(cls):
+        return [status.value for status in cls]
 
 class OrderBase(BaseModel):
     customer_name: str
