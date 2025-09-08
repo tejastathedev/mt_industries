@@ -33,7 +33,7 @@ def create_units(db, schema: CreateProductUnits):
 
     return new_unit  # This matches response_model=UnitResponse
 
-
+    
 # Retrieve all product units
 def get_units(db):
     units=db.query(Units).all()

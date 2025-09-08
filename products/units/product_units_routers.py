@@ -11,7 +11,7 @@ product_units_router = APIRouter(prefix="/product_units",tags=["Product Units"])
 # Product Units Endpoints
 
 # Create a new product unit
-@product_units_router.post("/create/", response_model=UnitResponse)
+@product_units_router.post("/create/")
 def create_product_unit(unit: CreateProductUnits, db: Session = Depends(get_db)):
     return create_units(db=db, schema=unit)
 
