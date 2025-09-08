@@ -10,3 +10,6 @@ class GetOTP(BaseModel):
 class CaptchaSchema(BaseModel):
     captcha_typed : str
     original_captcha : str
+
+class UnbanSchema(BaseModel):
+    company_id : int

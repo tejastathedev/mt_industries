@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from extras.models import CompanyOTP
 from random import choices
 from fastapi import HTTPException, status
@@ -13,7 +14,9 @@ def generateOTPFunc():
 def updateOTP(company_id : int, otp : str, db : Session):
     otp_record = db.query(CompanyOTP).filter(CompanyOTP.company_id == company_id).first()
     max_gen_hits = 3
-    
+    if(otp_record.creation_date is None):
+        db.query(CompanyOTP).filter(CompanyOTP.company_id == company_id).update({'creation_date' : func.now()})
+    print("Creation Time: ",otp_record.creation_date)
     if otp_record:
 
         if otp_record.status == 'blocked':
@@ -54,6 +57,8 @@ def IncreaseOTPHit(company_id, db: Session):
     if company_otp.hits < max_hits:
         print("Hits are still less", company_otp.hits)
         # Check for the creation time and current time !
+        print(company_otp.creation_date.timetuple)
+
         # if (company_otp.creation_date)+timedelta(minutes=30) < datetime.now():
         #     # OTP time is invalid
         #     return False
@@ -77,3 +82,12 @@ def deleteOTPRecord(company_id : int, db : Session):
 def captchaGeneration():
     captcha = ''.join(choices("abcdefghijklmnopqrstuvwxyz1234567890", k=6))
     return captcha
+
+def temporaryUnbanFunction(company_id, db : Session):
+    record = db.query(CompanyOTP).filter(CompanyOTP.company_id == company_id).first()
+    print(record.status)
+    if not record.status == 'blocked':
+        return False
+    db.query(CompanyOTP).filter(CompanyOTP.company_id == company_id).update({'status' : 'active', 'hits' : 0, 'generationHits': 0,'creation_date' : None})
+    db.commit()
+    return True
