@@ -1,6 +1,6 @@
 from products import models
-from .product_services import *
-from .schema import CreateProductUnits, UnitResponse, DeleteProductUnits,  UpdateProductUnits
+from products.units.product_units_services import *
+from products.units.prroduct_units_schema import CreateProductUnits, UnitResponse, DeleteProductUnits,  UpdateProductUnits
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -20,12 +20,6 @@ def create_product_unit(unit: CreateProductUnits, db: Session = Depends(get_db))
 @product_units_router.get("/get_all/")
 def read_product_units(db: Session = Depends(get_db)): 
     return get_units(db)
-
-
-# Get a product unit by its ID
-@product_units_router.get("/get/{unit_id}", response_model=UnitResponse)
-def read_product_unit(unit_id :int, db : Session = Depends(get_db)):
-    return get_unit_by_id(unit_id,db)
 
 
 # Soft delete a product unit by updating its status to 'deleted'

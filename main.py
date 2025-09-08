@@ -5,7 +5,7 @@ from auth.router import auth_router
 from utils.exception_handler import ExceptionHandler
 # from cron_jobs.scheduler import init_scheduler
 from products.models import *
-from products.product_routers import product_units_router
+from products.units.product_units_routers import product_units_router
 
 
 app = FastAPI()

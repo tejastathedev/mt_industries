@@ -1,5 +1,5 @@
-from .models import Units
-from .schema import CreateProductUnits, UnitResponse, UpdateProductUnits, DeleteProductUnits
+from ..models import Units
+from products.units.prroduct_units_schema import CreateProductUnits, UpdateProductUnits, DeleteProductUnits
 from datetime import datetime
 from fastapi import HTTPException
 from config import settings
@@ -42,14 +42,6 @@ def get_units(db):
     return units
 
 
-# Retrieve a product unit by its ID
-def get_unit_by_id(unit_id: int,db):
-
-    # Ensure the unit exists and is not deleted
-    unit = db.query(Units).filter(Units.id == unit_id, Units.status != 'deleted').first()
-    if not unit:
-        raise HTTPException(status_code=404, detail="Unit not found")
-    return unit
 
 # Soft delete a product unit by updating its status to 'deleted'
 def delete_unit(db, unit_id: int, schema: DeleteProductUnits):
@@ -64,7 +56,7 @@ def delete_unit(db, unit_id: int, schema: DeleteProductUnits):
 
 
 # Update an existing product unit
-def update_unit(db, unit_id :int, schema):
+def update_unit(db, unit_id :int, schema: UpdateProductUnits):
     unit = db.query(Units).filter(Units.id == unit_id).first()
     if not unit:
         raise HTTPException(status_code=404, detail="Unit not found")
