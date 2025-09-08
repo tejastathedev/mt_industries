@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from database import Base, engine
 from users.router import user_router
 from auth.router import auth_router
+from company.router import company_router
+from extras.router import extra_router
+from warehouse.router import warehouse_router
 from utils.exception_handler import ExceptionHandler
 # from cron_jobs.scheduler import init_scheduler
 from products.models import *
@@ -14,6 +17,9 @@ from products.dimensionUnits.dimension_routers import dimension_router
 app = FastAPI()
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(company_router)
+app.include_router(extra_router)
+app.include_router(warehouse_router)
 
 
 # Product routers
@@ -45,3 +51,11 @@ ExceptionHandler(app)
 
 # Start scheduler
 # scheduler = init_scheduler()
+<<<<<<< HEAD
+=======
+@app.on_event("startup")
+def start_scheduler():
+    init_scheduler()
+
+Base.metadata.create_all(engine)
+>>>>>>> 4adc65a67a0fb1c71747d6bc2d95dd606f5c9e34
