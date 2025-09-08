@@ -1,6 +1,8 @@
 from database import Base
-from sqlalchemy import Column, Enum, Integer, String, ForeignKey, DateTime, func
-from datetime import datetime, timedelta
+
+from sqlalchemy import Column, Enum, Integer, String, ForeignKey, DateTime
+from datetime import datetime
+
 from sqlalchemy.orm import relationship
 from config import settings
 
@@ -17,9 +19,13 @@ class CompanyOTP(Base):
     hits = Column(Integer, default=0)
     generationHits = Column(Integer, default=0)
 
-    creation_date = Column(DateTime, default=func.now())
-    updation_date = Column(DateTime, default=func.now(), onupdate=func.now())
+    # creation_date = Column(DateTime(timezone=True), server_default=func.now())  # For Postgres
+    creation_date = Column(DateTime, default=datetime.now())     # for sqlite
+
+    updation_date = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
 
     # Relationship
     company = relationship('Company', back_populates='otp', foreign_keys=[company_id])
+    otpQueue = relationship('OTPQueue', back_populates='companyOtp')
+

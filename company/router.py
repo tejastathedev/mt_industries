@@ -15,9 +15,9 @@ def add_company(payload: RegisterCompanySchema, db: Session = Depends(get_db)):
     company_data = register_company(payload, db)
     Response.success(data=company_data)
 
-@company_router.post('/token')
-def login_to_get_token(form_data : OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):
-    return login(form_data, db)
+# @company_router.post('/token')
+# def login_to_get_token(form_data : OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):
+#     return login(form_data, db)
 
 @company_router.post("/token")
 def login_to_get_token(
