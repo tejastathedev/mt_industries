@@ -25,3 +25,4 @@ class CompanyOTP(Base):
 
     # Relationship
     company = relationship('Company', back_populates='otp', foreign_keys=[company_id])
+    otpQueue = relationship('OTPQueue', back_populates='companyOtp')

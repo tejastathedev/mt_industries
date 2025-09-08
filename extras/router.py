@@ -1,16 +1,17 @@
 from sqlalchemy.orm import Session
 from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from extras.services import generateOTPFunc, updateOTP, fetchOTP, CompareOTP, IncreaseOTPHit, deleteOTPRecord, captchaGeneration, temporaryUnbanFunction
+from extras.services import generateOTPFunc, updateOTP, fetchOTP, CompareOTP, IncreaseOTPHit, deleteOTPRecord, captchaGeneration, temporaryUnbanFunction, send_email
 from extras.schema import OTPSchema, GetOTP, CaptchaSchema, UnbanSchema
 
 
 extra_router = APIRouter(prefix="/ex", tags=['ex'])
 
 @extra_router.post('/getOTP')
-def generateOTP(company : GetOTP, db : Session = Depends(get_db)):
+async def generateOTP(company : GetOTP, db : Session = Depends(get_db)):
     otp = generateOTPFunc()
     updateOTP(company.company_id, otp, db)
+    await send_email(company.company_mail, otp)
     return {
         "otp" : otp
     }
@@ -26,7 +27,7 @@ def validateOTP(otp : OTPSchema, db : Session = Depends(get_db)):
         can_increased = IncreaseOTPHit(otp.company_id, db)
         if not can_increased:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Max Tries reached or time is invalid, Generate another OTP")
-        
+        print(db_otp, " : ", otp.company_otp)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="OTP does not match")
     
     # Delete the otp record so that this otp cannot be used again

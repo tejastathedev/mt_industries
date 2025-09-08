@@ -6,7 +6,7 @@ from company.router import company_router
 from extras.router import extra_router
 from warehouse.router import warehouse_router
 from utils.exception_handler import ExceptionHandler
-# from cron_jobs.scheduler import init_scheduler
+from cron_jobs.scheduler import init_scheduler
 
 
 app = FastAPI()
@@ -27,5 +27,8 @@ ExceptionHandler(app)
 
 # Start scheduler
 # scheduler = init_scheduler()
+@app.on_event("startup")
+def start_scheduler():
+    init_scheduler()
 
 Base.metadata.create_all(engine)
