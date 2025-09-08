@@ -12,6 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from database import Base
 from config import settings
+from company.models import Company
 
 
 # Units model defines the quantity of the products 
