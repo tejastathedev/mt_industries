@@ -70,5 +70,31 @@ class Constants:
     returned = 'returned'
   
 
-
-
+# Changes made by nikita on 05092025
+# Adding OrderProductUpdate schema to update quantity and discount
+class OrderProductUpdate(BaseModel):
+    quantity: Optional[int]
+    discount: Optional[float]
+    product_purchase_price: Optional[float]
+    total_amount: Optional[float]
+    profit_amount: Optional[float]
+    discounted_amount: Optional[float]
+    class Config:
+        orm_mode = True
+#05092025 End
+# 05092025 Adding schema for restock endpoint
+# Schema for restocking a product
+class RestockProduct(BaseModel):    
+    product_id: int
+    additional_stock: int
+    class Config:
+        orm_mode = True
+# 05092025 End
+# 05092025 Adding schema for update stock endpoint
+# Schema for updating stock after an order is placed
+class UpdateStock(BaseModel):
+    product_id: int
+    quantity: int
+    class Config:
+        orm_mode = True
+# 05092025 End

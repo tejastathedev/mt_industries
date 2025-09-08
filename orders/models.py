@@ -76,7 +76,10 @@ class OrderProduct(Base):
         "Products", back_populates="order_products"
     )
 
-    @validates("discount")
-    def calculate_discounted_amount(self, key, discount):
-        self.discounted_amount = self.total_amount - discount
-        return discount
+
+    
+
+
+
+
+
