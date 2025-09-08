@@ -1,4 +1,4 @@
-from sqlalchemy import (
+from sqlalchemy.orm import (
     Column,
     Integer,
     String,
