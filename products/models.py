@@ -8,10 +8,12 @@ from sqlalchemy import (
     ForeignKey,
     func,
     Float,
+    Date,
 )
 from sqlalchemy.orm import relationship
 from database import Base
 from config import settings
+from company.models import Company
 
 
 
@@ -110,7 +112,7 @@ class Products(Base):
     weight_unit_id = Column(Integer, ForeignKey("weight_units.id"))
     unit_id = Column(Integer, ForeignKey("units.id"))
     initial_stock = Column(Float, nullable=False)
-    initial_stock = Column(Float, nullable=False)
+    # initial_stock = Column(Float, nullable=False)
 
     dimension_units = relationship("DimensionUnits", back_populates="products")
     categories = relationship("Categories", back_populates="products")
@@ -124,12 +126,15 @@ class Products(Base):
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
-    creation_date = Column(DateTime, default=func.now())
+    # creation_date = Column(DateTime, default=func.now())
+    creation_date = Column(Date)
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, onupdate=func.now())
+    # updation_date = Column(DateTime, onupdate=func.now())
+    updation_date = Column(Date)
     deleted_by = Column(Integer, ForeignKey("users.id"))
-    deletion_date = Column(DateTime)
+    # deletion_date = Column(DateTime)
+    deletion_date = Column(Date)
     company_id = Column(Integer, ForeignKey("companies.id"))
 
 
@@ -139,8 +144,8 @@ class ProductStockHistory(Base):
     product_id = Column(Integer, ForeignKey("products.id"))
     warehouse_id = Column(Integer, ForeignKey("warehouses.id"))
     stock_type = Column(
-        Enum("stock", "opening", "sale", name="stock_type_enum"),
-        default=settings.STATUS_ENUM[0],
+        Enum(*settings.STOCK_TYPE, name="stock_type_enum"),
+        default=settings.STOCK_TYPE[0]
     )
     stock = Column(Float, nullable=False)
     prev_stock = Column(Float, nullable=False)
@@ -148,8 +153,8 @@ class ProductStockHistory(Base):
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
-    creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
+    creation_date = Column(DateTime, default=func.now())
     updated_by = Column(Integer, ForeignKey("users.id"))
     updation_date = Column(DateTime, onupdate=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))

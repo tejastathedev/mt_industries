@@ -7,6 +7,7 @@ load_dotenv()
 
 class Settings:
     STATUS_ENUM = os.getenv("STATUS_ENUM", "active,deleted").split(",")
+    STOCK_TYPE = os.getenv("STOCK_TYPE", "stock,opening,sale").split(",")
     ORDER_PAYMENT_TYPE = os.getenv("STATUS_ENUM", "COD,UPI").split(",")
     ORDER_STATUS_ENUM = os.getenv(
         "ORDER_STATUS_ENUM", "pending,dispatched,delivered,returned,rejected,cancelled"
