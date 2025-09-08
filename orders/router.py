@@ -5,6 +5,10 @@ from orders.models import Order
 from .service import create_payment_status, create_order_function
 
 
+# User endpoints
+@user_router.post('/register')
+def register_user():
+    pass  # Implementation for user registration
 
 # order_router = APIRouter(prefix='/order', tags=['order'])
 

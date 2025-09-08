@@ -1,7 +1,22 @@
-# Scope creation endpoint will not be made as we only have to manually add 3-4 roles into the table
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from database import get_db
+from users.services import register_scopes, register_user_in_db
+from users.schema import RegisterSchema
 
 
-# Company related endpoints
-# Company and admin user's creation endpoint
-# Company updation endpoint (scope: admin only)
-# company deletion endpoint (scope: admin only, related dependency will be deleted)
+
+user_router = APIRouter(prefix='/user', tags=['user'])
+
+
+
+@user_router.post('/pushAllScopes')
+def register_all_scopes(db : Session = Depends(get_db)):
+    return register_scopes(db)
+
+
+
+@user_router.post('/register')
+def register_user(input : RegisterSchema, db : Session = Depends(get_db)):
+    return register_user_in_db(input, db)
+# Changed commentik
