@@ -1,6 +1,8 @@
 from database import Base
+
 from sqlalchemy import Column, Enum, Integer, String, ForeignKey, DateTime
 from datetime import datetime
+
 from sqlalchemy.orm import relationship
 from config import settings
 
@@ -26,3 +28,4 @@ class CompanyOTP(Base):
     # Relationship
     company = relationship('Company', back_populates='otp', foreign_keys=[company_id])
     otpQueue = relationship('OTPQueue', back_populates='companyOtp')
+

@@ -6,6 +6,7 @@ class OTPSchema(BaseModel):
 
 class GetOTP(BaseModel):
     company_id : int
+
     company_mail : str
 
 class CaptchaSchema(BaseModel):
