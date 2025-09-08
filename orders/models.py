@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func
+from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func, Text
 from sqlalchemy.orm import relationship, validates
 from database import Base
-from orders.schema import Constants
-
+from config import Settings
+from users.models import User
 # Columns that are common in most of the tables :-
 # status, creation_date, created_by, updation_date, updated_by, deletion_time, deleted_by
 
@@ -28,11 +28,11 @@ class Order(Base):
     total_amount = Column(Float, nullable=False)
     customer_remark = Column(String)
     admin_remark = Column(String)
-    order_status = Column(Enum('ordered', 'delivered', 'cancelled', 'returned', 'rejected', name='order_status_enum'), default=Constants.ordered)
+    order_status = Column(Enum(*Settings.ORDER_STATUS_ENUM, name='order_status_enum'), default=Settings.ORDER_STATUS_ENUM[0])
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     # order_date = Column(DateTime, default=func.now(), nullable=False) #Removed the order date column as it was duplicated in creation date
-    status = Column(Enum('live', 'deleted', name='order_status_enum'), default=Constants.live)
+    status = Column(Enum(*Settings.STATUS_ENUM, name='order_status_enum'), default=Settings.STATUS_ENUM[0])
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey('users.id'))
     updated_by = Column(Integer, ForeignKey('users.id'))
@@ -77,12 +77,13 @@ class OrderProduct(Base):
 #payment_id --> primary key, autoincrement
 #order_id --> foreign key, references orders.id
 
-class Payment(Base):
-    __tablename__ = "payment_status"
+# class Payment(Base):
+#     __tablename__ = "payment_status"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    order_id = Column(Integer, ForeignKey('Order.order_id'))
-    payment_status = Column(Enum('pending', 'completed', 'failed', name='payment_status_enum'), default=Constants.pending)
-    payment_status_date = Column(DateTime, default =func.now())
+#     id = Column(Integer, primary_key=True, autoincrement=True)
+#     order_id = Column(Integer, ForeignKey('Order.order_id'))
+#     # order_id = Column(Integer, ForeignKey('orders.id'))
+#     payment_status = Column(Enum('pending', 'completed', 'failed', name='payment_status_enum'), default=Constants.pending)
+#     payment_status_date = Column(DateTime, default =func.now())
 
     

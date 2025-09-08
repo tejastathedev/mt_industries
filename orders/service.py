@@ -1,7 +1,7 @@
 from database import Session
 from datetime import datetime
-from orders.schema import CreatePaymentStatus
-from orders.models import Payment
+from orders.schema import CreatePaymentStatus, OrderCreate
+from orders.models import Order
 from fastapi import HTTPException, status           
 
 
@@ -24,4 +24,17 @@ def create_payment_status(request:CreatePaymentStatus,db : Session):
     db.refresh(new_payment_status)
     return new_payment_status
     
+
+
+    #nikita
+
+
+
+def create_order_function(order: OrderCreate, db: Session):
+    db_order = Order(**order.dict()) # Unpack the order data into the Order model
+    db.add(db_order)
+    db.commit()
+    db.refresh(db_order)
+    return db_order
+
     

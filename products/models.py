@@ -24,7 +24,7 @@ class Units(Base):
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, donupdate=func.now())
+    updation_date = Column(DateTime, onupdate=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
