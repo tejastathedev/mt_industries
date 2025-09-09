@@ -13,8 +13,15 @@ from products.weightUnits.product_weightunit_routers import weightunit_router
 from products.categories.categories_router import categories_router
 from products.dimensionUnits.dimension_routers import dimension_router
 
+from products.router import productrouter
+from products.ProductHistory.router import producthistoryrouter
+
 
 app = FastAPI()
+# app.include_router(auth_router)
+# app.include_router(user_router)
+app.include_router(productrouter)
+app.include_router(producthistoryrouter)
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(company_router)
@@ -46,13 +53,20 @@ def home_function():
 
 8000
 # call exception handler for raising all the exception from one file/location
+<<<<<<< HEAD
 ExceptionHandler(app)
+=======
+# ExceptionHandler(app)  
+>>>>>>> Rohit
 
 
 # Start scheduler
 # scheduler = init_scheduler()
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> Rohit
 @app.on_event("startup")
 def start_scheduler():
     init_scheduler()
