@@ -28,3 +28,4 @@ class OTP(Base):
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
+    

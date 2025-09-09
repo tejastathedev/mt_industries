@@ -19,7 +19,7 @@ class Company(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)
-    mail = Column(String, nullable=False)  # Allow duplicate mails (?)
+    mail = Column(String, nullable=False, unique=True)
     phone = Column(String, nullable=False, unique=True)
     password = Column(String,nullable=False)
     
