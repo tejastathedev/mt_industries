@@ -6,7 +6,9 @@ from datetime import datetime, timedelta
 from cron_jobs.otpJobs.models import OTPQueue
 import smtplib
 from email.message import EmailMessage
+
 from utils.filtering import apply_filters
+
 
 # OTP related Functions
 
@@ -16,6 +18,7 @@ def generateOTPFunc():
     return otp
 
 def updateOTP(company_id : int, otp : str, db : Session):
+
     filters = {
         'otp_companyid': company_id,
 
@@ -28,6 +31,7 @@ def updateOTP(company_id : int, otp : str, db : Session):
     query = db.query(CompanyOTP)
     query = apply_filters(query, filters)
     otp_record = query.first()# continue applying filter
+
     max_gen_hits = 3
 
     if otp_record:

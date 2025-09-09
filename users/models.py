@@ -32,8 +32,6 @@ class UserScope(Base):
 
 
 
-
-
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -61,4 +59,4 @@ class User(Base):
     # Relationships
     scopes = relationship("UserScope", back_populates="users", uselist=False)
     warehouse = relationship("Warehouse", back_populates="users", uselist=False, foreign_keys=[warehouse_id])
-    
+
