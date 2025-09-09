@@ -4,8 +4,11 @@ from config import settings
 from datetime import datetime
 
 
-def insert_warehouse(payload, db):
+
+def insert_warehouse(payload, db, company_id):
     new_warehouse = Warehouse(**payload.dict())  # Correct unpacking
+    new_warehouse.company_id=company_id
+
     db.add(new_warehouse)
     db.commit()
     db.refresh(new_warehouse)  # Populate new values like id
