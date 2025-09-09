@@ -1,6 +1,8 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func, Text
 from sqlalchemy.orm import relationship, validates
 from database import Base
+from enum import Enum as SqlEnum
+from orders.schema import OrderStatusEnum
 from config import settings
 from products.models import Products
 
@@ -32,7 +34,7 @@ class Order(Base):
     customer_remark = Column(String)
     admin_remark = Column(String)
     order_status = Column(
-        Enum(*settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
+        SqlEnum(OrderStatusEnum),default=OrderStatusEnum.PENDING , nullable=False
     )
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
@@ -73,11 +75,10 @@ class OrderProduct(Base):
 
     order = relationship("Order", back_populates="order_products")
     product = relationship(
-        "Products", back_populates="order_products"
+        "Products", back_populates="OrderProducts"
     )
 
 
-    
 
 
 

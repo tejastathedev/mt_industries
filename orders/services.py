@@ -11,8 +11,13 @@ def create_order(order: schema.OrderCreate, db: Session):
     db.refresh(db_order)
     return db_order
 
+#
+def OrderProductStockDetails(order_id: int, db: Session):
+    order_products = db.query(models.OrderProduct).filter(models.OrderProduct.order_id == order_id).all()
+    return order_products
+
 # Function to update order status
-def update_order_status(order_id: int, status: schema.OrderStatusEnum, db: Session):
+def update_order_status(order_id: int, status: schema.Order_Status_Enum, db: Session):
     db_order = db.query(models.Order).filter(models.Order.id == order_id).first() # Fetch the order by ID
     if not db_order:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -59,14 +64,14 @@ def get_order_details(order_id: int, db: Session):
 def list_orders(db: Session):
     orders = db.query(models.Order).all() # Fetch all orders
     return orders
-# Function to delete an order
-def delete_order(order_id: int, db: Session):
-    db_order = db.query(models.Order).filter(models.Order.id == order_id).first() # Fetch the order by ID
-    if not db_order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    db.delete(db_order)
-    db.commit()
-    return {"detail": "Order deleted successfully"}
+# # Function to delete an order
+# def delete_order(order_id: int, db: Session):
+#     db_order = db.query(models.Order).filter(models.Order.id == order_id).first() # Fetch the order by ID
+#     if not db_order:
+#         raise HTTPException(status_code=404, detail="Order not found")
+#     db.delete(db_order)
+#     db.commit()
+#     return {"detail": "Order deleted successfully"}
 # Function to add products to an order
 def add_product_to_order(order_product: schema.OrderProductCreate, db: Session):
     db_order_product = models.OrderProduct(**order_product.dict()) # Unpack the order product data into the OrderProduct model
@@ -78,14 +83,7 @@ def add_product_to_order(order_product: schema.OrderProductCreate, db: Session):
 def list_order_products(order_id: int, db: Session):
     order_products = db.query(models.OrderProduct).filter(models.OrderProduct.order_id == order_id).all() # Fetch products by order ID
     return order_products
-# Function to remove a product from an order
-def remove_product_from_order(order_product_id: int, db: Session):
-    db_order_product = db.query(models.OrderProduct).filter(models.OrderProduct.id == order_product_id).first() # Fetch the order product by ID
-    if not db_order_product:
-        raise HTTPException(status_code=404, detail="Order product not found")
-    db.delete(db_order_product)
-    db.commit()
-    return {"detail": "Order product removed successfully"}
+
 # Function to update product quantity in an order
 def update_order_product_quantity(order_product_id: int, new_quantity: int, db: Session
 ):

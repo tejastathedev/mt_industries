@@ -1,24 +1,11 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
-from ..config  import settings
+from config import settings
+
+OrderStatusEnum = settings.OrderStatusEnum
 
 
-
-# Create Enum dynamically from ORDER_STATUS_ENUM
-class OrderStatusEnum(str, Enum):
-    # Dynamically assign enum values
-    # Example: pending, dispatched, delivered, returned, rejected, cancelled
-    pending = "pending"
-    dispatched = "dispatched"
-    delivered = "delivered"
-    returned = "returned"
-    rejected = "rejected"
-    cancelled = "cancelled"
-
-    @classmethod
-    def choices(cls):
-        return [status.value for status in cls]
 
 class OrderBase(BaseModel):
     customer_name: str
@@ -30,12 +17,25 @@ class OrderBase(BaseModel):
     total_amount: float
     customer_remark: Optional[str]
     admin_remark: Optional[str]
-    order_status: OrderStatusEnum = OrderStatusEnum.pending
+    order_status: OrderStatusEnum = OrderStatusEnum.PENDING
     latitude: float
     longitude: float
 
 class OrderCreate(OrderBase):
     pass
+
+
+class OrderProductCreate(BaseModel):
+    order_id : int
+    product_id : int
+    product_purchase_price : float
+    quantity : int
+    total_amount : float
+    discount : Optional[float] = 0.0
+    discounted_amount : Optional[float] = 0.0
+    profit_amount : float
+
+
 
 class OrderUpdate(BaseModel):
     order_status: Optional[OrderStatusEnum]
@@ -83,6 +83,7 @@ class Constants:
 # Changes made by nikita on 05092025
 # Adding OrderProductUpdate schema to update quantity and discount
 class OrderProductUpdate(BaseModel):
+    product_id : Optional[int]
     quantity: Optional[int]
     discount: Optional[float]
     product_purchase_price: Optional[float]
@@ -91,20 +92,3 @@ class OrderProductUpdate(BaseModel):
     discounted_amount: Optional[float]
     class Config:
         orm_mode = True
-#05092025 End
-# 05092025 Adding schema for restock endpoint
-# Schema for restocking a product
-class RestockProduct(BaseModel):    
-    product_id: int
-    additional_stock: int
-    class Config:
-        orm_mode = True
-# 05092025 End
-# 05092025 Adding schema for update stock endpoint
-# Schema for updating stock after an order is placed
-class UpdateStock(BaseModel):
-    product_id: int
-    quantity: int
-    class Config:
-        orm_mode = True
-# 05092025 End

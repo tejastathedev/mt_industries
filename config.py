@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 from dotenv import load_dotenv
 
 # Load variables from .env file
@@ -11,6 +12,9 @@ class Settings:
     ORDER_STATUS_ENUM = os.getenv(
         "ORDER_STATUS_ENUM", "pending,dispatched,delivered,returned,rejected,cancelled"
     ).split(",")
+
+    # build enum dynamically
+    OrderStatusEnum = Enum("OrderStatusEnum", {status.upper(): status for status in ORDER_STATUS_ENUM})
 
     DATA_ADDED_SUCCESSFULLY = os.getenv(
         "DATA_ADDED_SUCCESSFULLY", "Data added successfully"
