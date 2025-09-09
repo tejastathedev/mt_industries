@@ -19,7 +19,7 @@ def create_order(order: schema.OrderCreate, db: Session = Depends(get_db)):
 # Update order status
 @order_router.patch('/{order_id}/status')
 def update_order_status(order_id: int, status: schema.Order_Status_Enum, db: Session = Depends(get_db)):
-    return services.update_order_status(order_id, status, db
+    return services.update_order_status(order_id, status, db)
 
 
 # Get order details
@@ -31,6 +31,3 @@ def get_order_details(order_id: int, db: Session = Depends(get_db)):
 @order_router.get('/')
 def list_orders(db: Session = Depends(get_db)):
     return services.list_orders(db)
-
-
-
