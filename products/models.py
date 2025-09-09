@@ -1,4 +1,4 @@
-from sqlalchemy import (
+from sqlalchemy.orm import (
     Column,
     Integer,
     String,
@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey,
     func,
     Float,
+    Date,
 )
 from sqlalchemy.orm import relationship
 from database import Base
@@ -15,7 +16,7 @@ from config import settings
 from company.models import Company
 
 
-
+# Units model defines the quantity of the products 
 class Units(Base):
     __tablename__ = "units"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -31,6 +32,15 @@ class Units(Base):
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
+
+    # creation_date = Column(DateTime, default=func.now())
+    # created_by = Column(Integer)
+    # updated_by = Column(Integer)
+    # updation_date = Column(DateTime, onupdate=func.now())
+    # deleted_by = Column(Integer)
+    # deletion_date = Column(DateTime)
+    # company_id = Column(Integer)
+    
     products = relationship("Products", back_populates="units")
 
 
@@ -49,6 +59,14 @@ class WeightUnits(Base):
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
     company_id = Column(Integer, ForeignKey("companies.id"))
+
+    # creation_date = Column(DateTime, default=func.now())
+    # created_by = Column(Integer)
+    # updated_by = Column(Integer)
+    # updation_date = Column(DateTime, onupdate=func.now())
+    # deleted_by = Column(Integer)
+    # deletion_date = Column(DateTime)
+    # company_id = Column(Integer)
 
     products = relationship("Products", back_populates="weight_units")
 
@@ -70,6 +88,15 @@ class Categories(Base):
     deletion_date = Column(DateTime)
     company_id = Column(Integer, ForeignKey("companies.id"))
 
+
+    # creation_date = Column(DateTime, default=func.now())
+    # created_by = Column(Integer)
+    # updated_by = Column(Integer)
+    # updation_date = Column(DateTime, onupdate=func.now())
+    # deleted_by = Column(Integer)
+    # deletion_date = Column(DateTime)
+    # company_id = Column(Integer)
+
     products = relationship("Products", back_populates="categories")
 
 
@@ -89,6 +116,15 @@ class DimensionUnits(Base):
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
     company_id = Column(Integer, ForeignKey("companies.id"))
+
+
+    # creation_date = Column(DateTime, default=func.now())
+    # created_by = Column(Integer)
+    # updated_by = Column(Integer)
+    # updation_date = Column(DateTime, onupdate=func.now())
+    # deleted_by = Column(Integer)
+    # deletion_date = Column(DateTime)
+    # company_id = Column(Integer)
 
     products = relationship("Products", back_populates="dimension_units")
 
@@ -111,7 +147,6 @@ class Products(Base):
     weight_unit_id = Column(Integer, ForeignKey("weight_units.id"))
     unit_id = Column(Integer, ForeignKey("units.id"))
     initial_stock = Column(Float, nullable=False)
-    initial_stock = Column(Float, nullable=False)
 
     dimension_units = relationship("DimensionUnits", back_populates="products")
     categories = relationship("Categories", back_populates="products")
@@ -125,13 +160,24 @@ class Products(Base):
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
-    creation_date = Column(DateTime, default=func.now())
+    # creation_date = Column(DateTime, default=func.now())
+    creation_date = Column(Date)
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, onupdate=func.now())
+    # updation_date = Column(DateTime, onupdate=func.now())
+    updation_date = Column(Date)
     deleted_by = Column(Integer, ForeignKey("users.id"))
-    deletion_date = Column(DateTime)
+    # deletion_date = Column(DateTime)
+    deletion_date = Column(Date)
     company_id = Column(Integer, ForeignKey("companies.id"))
+
+    # created_by = Column(Integer)
+    # updated_by = Column(Integer)
+    # updation_date = Column(DateTime, onupdate=func.now())
+    # deleted_by = Column(Integer)
+    # deletion_date = Column(DateTime)
+    # company_id = Column(Integer)
+
 
 
 class ProductStockHistory(Base):
@@ -139,9 +185,12 @@ class ProductStockHistory(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer, ForeignKey("products.id"))
     warehouse_id = Column(Integer, ForeignKey("warehouses.id"))
+
+    warehouse_id = Column(Integer)
+
     stock_type = Column(
-        Enum("stock", "opening", "sale", name="stock_type_enum"),
-        default=settings.STATUS_ENUM[0],
+        Enum(*settings.STOCK_TYPE, name="stock_type_enum"),
+        default=settings.STOCK_TYPE[0]
     )
     stock = Column(Float, nullable=False)
     prev_stock = Column(Float, nullable=False)
@@ -149,8 +198,8 @@ class ProductStockHistory(Base):
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
-    creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
+    creation_date = Column(DateTime, default=func.now())
     updated_by = Column(Integer, ForeignKey("users.id"))
     updation_date = Column(DateTime, onupdate=func.now())
     deleted_by = Column(Integer, ForeignKey("users.id"))

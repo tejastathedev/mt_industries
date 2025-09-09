@@ -16,6 +16,10 @@ class OrderStatusEnum(Enum):
 
 
 class Settings:
+<<<<<<< HEAD
+=======
+    STOCK_TYPE = os.getenv("STOCK_TYPE", "stock,opening,sale").split(",")
+>>>>>>> Rohit
     STATUS_ENUM = os.getenv("STATUS_ENUM", "active,deleted,blocked").split(",")
     ORDER_PAYMENT_TYPE = os.getenv("STATUS_ENUM", "COD,UPI").split(",")
 

@@ -3,6 +3,9 @@ from sqlalchemy.orm import relationship
 from config import settings
 from database import Base
 
+from datetime import datetime
+
+
 class Warehouse(Base):
     __tablename__ = "warehouses"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -16,10 +19,12 @@ class Warehouse(Base):
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
     )
-    creation_date = Column(DateTime, default=func.now())
+
+    creation_date = Column(DateTime, default=datetime.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
-    updation_date = Column(DateTime, onupdate=func.now())
+    updation_date = Column(DateTime, onupdate=datetime.now())
+
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
