@@ -5,6 +5,13 @@ from dotenv import load_dotenv
 # Load variables from .env file
 load_dotenv()
 
+class OrderStatusEnum(str, Enum):
+    PENDING = "pending"
+    DISPATCHED = "dispatched"
+    DELIVERED = "delivered"
+    RETURNED = "returned"
+    REJECTED = "rejected"
+    CANCELLED = "cancelled"
 
 class Settings:
     STATUS_ENUM = os.getenv("STATUS_ENUM", "active,deleted,blocked").split(",")
@@ -13,8 +20,8 @@ class Settings:
         "ORDER_STATUS_ENUM", "pending,dispatched,delivered,returned,rejected,cancelled"
     ).split(",")
 
-    # build enum dynamically
-    OrderStatusEnum = Enum("OrderStatusEnum", {status.upper(): status for status in ORDER_STATUS_ENUM})
+    # # build enum dynamically
+    # OrderStatusEnum = Enum("OrderStatusEnum", {status.upper(): status for status in ORDER_STATUS_ENUM})
 
     DATA_ADDED_SUCCESSFULLY = os.getenv(
         "DATA_ADDED_SUCCESSFULLY", "Data added successfully"

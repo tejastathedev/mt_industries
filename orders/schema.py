@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
-from config import settings
+from config import OrderStatusEnum, settings
 
-OrderStatusEnum = settings.OrderStatusEnum
+#OrderStatusEnum = settings.OrderStatusEnum
 
 
 
