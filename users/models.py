@@ -34,7 +34,6 @@ class UserScope(Base):
 
 
 
-
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -46,7 +45,8 @@ class User(Base):
     access_token = Column(String(32))
     refresh_token = Column(String(32))
     scope_id = Column(Integer, ForeignKey("userscopes.id"))
-    warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
+    warehouse_id = Column(Integer, ForeignKey("warehouses.id"))
+
     otp = Column(Integer)
     status = Column(
         Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
@@ -61,5 +61,4 @@ class User(Base):
     # Relationships
     scopes = relationship("UserScope", back_populates="users", uselist=False)
     warehouse = relationship("Warehouse", back_populates="users", uselist=False, foreign_keys=[warehouse_id])
-
 

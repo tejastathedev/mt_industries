@@ -21,7 +21,9 @@ def add_warehouse(
     db: Session = Depends(get_db),
     company_id: int = Depends(validate_company_token),
 ):
+
     new_warehouse = insert_warehouse(payload, db, company_id)
+
     return Response.success(data=new_warehouse)
 
 

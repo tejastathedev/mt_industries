@@ -27,9 +27,13 @@ class Company(Base):
     creation_date = Column(DateTime, default=datetime.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
+
     updation_date = Column(DateTime, onupdate=datetime.now())
+
     deleted_by = Column(Integer, ForeignKey("users.id"))
     deletion_date = Column(DateTime)
 
     # Relationships
     warehouses = relationship("Warehouse", back_populates="company")
+
+    otp = relationship("CompanyOTP", back_populates='company')
