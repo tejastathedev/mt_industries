@@ -67,8 +67,12 @@ class Constants:
     ordered = 'ordered'
     delivered = 'delivered'
     cancelled = 'cancelled'
+<<<<<<< HEAD
     returned = 'returned'
   
 
 
 
+=======
+    returned = 'returned'
+>>>>>>> amol
