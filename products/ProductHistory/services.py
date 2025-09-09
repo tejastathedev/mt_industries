@@ -13,6 +13,12 @@ def create_product_history(db:Session,product_id:int,warehouse_id:int):
     if not db_product:
         raise HTTPException(status_code=404,detail="Product Not Found in Product Table.!")
     
+    db_history=db.query(models.ProductStockHistory).filter(
+        models.ProductStockHistory.product_id==product_id,
+        models.ProductStockHistory.warehouse_id==warehouse_id
+    ).first()
+    if db_history:
+        raise HTTPException(status_code=404,detail="Product History Already Present.!")
     # db_warehouse=db.query(WarehouseModel.Warehouse).filter(
     #     WarehouseModel.Warehouse.id == warehouse_id
     # ).first()
@@ -36,4 +42,17 @@ def create_product_history(db:Session,product_id:int,warehouse_id:int):
     db.add(db_history)
     db.commit()
     db.refresh(db_history)
+    return db_history
+
+
+def delete_product_history(db:Session,product_id:int,warehouse_id:int):
+    db_history=db.query(models.ProductStockHistory).filter(
+        models.ProductStockHistory.product_id==product_id,
+        models.ProductStockHistory.warehouse_id==warehouse_id
+    ).first()
+    if not db_history:
+        raise HTTPException(status_code=404,detail="Product History Already Deleted.!")
+    
+    db.delete(db_history)
+    db.commit()
     return db_history

@@ -8,3 +8,7 @@ producthistoryrouter=APIRouter(tags=["ProductsHistory"])
 @producthistoryrouter.post("/RegisterProductHistory",response_model=schemas.ProductHistoryResponse)
 def create_products_historys(product_id:int,warehouse_id:int,db:Session=Depends(get_db)):
     return services.create_product_history(db,product_id,warehouse_id)
+
+@producthistoryrouter.delete("/DeleteProductHistory/{product_id}")
+def delete_histories(product_id:int, warehouse_id:int ,db:Session=Depends(get_db)):
+    return services.delete_product_history(db,product_id,warehouse_id)
