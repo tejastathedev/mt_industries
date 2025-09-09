@@ -23,7 +23,7 @@ from config import settings
 # Customer Related columns -> customer_name, customer_phone, customer_mail, customer_address, customer_remark
 # Payment Related Columns -> payment_type, total_amount (calculated by order_products table)
 # Order Related Columns - > platform_name, order_status
-# Other misc columns -> admin_remark
+# Other misc columns -> admin_remark 
 
 
 class Order(Base):
@@ -35,8 +35,9 @@ class Order(Base):
     customer_address = Column(String(500), nullable=False)
     platform_name = Column(String(255), nullable=True)
     order_payment_type = Column(
-        Enum(*settings.ORDER_PAYMENT_TYPE, name="payment_enum"), nullable=False
+        Enum(*Settings.ORDER_PAYMENT_TYPE, name="payment_enum"), nullable=False
     )
+    #order_payment_type = Column(Enum(OrderPaymentType), nullable=False)  #nikita
     total_amount = Column(Float, nullable=False)
     customer_remark = Column(String)
     admin_remark = Column(String)
@@ -47,9 +48,7 @@ class Order(Base):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     # order_date = Column(DateTime, default=func.now(), nullable=False) #Removed the order date column as it was duplicated in creation date
-    status = Column(
-        Enum(*settings.STATUS_ENUM, name="status_enum"), default=settings.STATUS_ENUM[0]
-    )
+    status = Column(Enum(*Settings.STATUS_ENUM, name='order_status_enum'), default=Settings.STATUS_ENUM[0])
     creation_date = Column(DateTime, default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(Integer, ForeignKey("users.id"))
@@ -88,3 +87,20 @@ class OrderProduct(Base):
     def calculate_discounted_amount(self, key, discount):
         self.discounted_amount = self.total_amount - discount
         return discount
+
+
+#this is a payment status table 
+# which will keep track of the payment status of the order
+#payment_id --> primary key, autoincrement
+#order_id --> foreign key, references orders.id
+
+# class Payment(Base):
+#     __tablename__ = "payment_status"
+
+#     id = Column(Integer, primary_key=True, autoincrement=True)
+#     order_id = Column(Integer, ForeignKey('Order.order_id'))
+#     # order_id = Column(Integer, ForeignKey('orders.id'))
+#     payment_status = Column(Enum('pending', 'completed', 'failed', name='payment_status_enum'), default=Constants.pending)
+#     payment_status_date = Column(DateTime, default =func.now())
+
+    

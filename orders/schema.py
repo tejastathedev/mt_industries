@@ -1,14 +1,37 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List
+from pydantic import BaseModel
+from datetime import datetime
 from enum import Enum
+from typing import Optional
+from config import OrderStatusEnum 
 
-class OrderStatusEnum(str, Enum):
-    pending = "pending"
-    dispatched = "dispatched"
-    delivered = "delivered"
-    returned = "returned"
-    rejected = "rejected"
-    cancelled = "cancelled"
+
+
+
+
+
+
+    # scheams for payment status 
+
+class CreatePaymentStatus(BaseModel):
+    payment_id: int
+    payment_status: str
+    payment_status_date: datetime
+        
+
+class PaymentStatusResponse(BaseModel):
+    id: int
+    payment_id: int
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
+
+
+
+
+# nikita 
+
+#OrderStatusEnum = Settings.OrderStatusEnum
 
 class OrderBase(BaseModel):
     customer_name: str
@@ -68,7 +91,9 @@ class Constants:
     delivered = 'delivered'
     cancelled = 'cancelled'
     returned = 'returned'
-  
+    pending = 'pending'
+
+    
 
 
 
