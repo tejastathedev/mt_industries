@@ -91,6 +91,23 @@ def create_access_token(subject : str, db : Session) -> str:
 
     return encoded
 
+# Access Token Creation Function
+def create_company_access_token(subject : str, db : Session) -> str:
+    expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + expires_delta
+
+    to_encode = {
+        "sub" : subject,
+        "iat" : int(datetime.now(timezone.utc).timestamp()),
+        "exp" : int(expire.timestamp())
+    }
+    encoded = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    # Storing access token in database
+    db.query(Company).filter(Company.email == subject).update({"access_token" : encoded})
+    db.commit()
+
+    return encoded
+
 def create_refresh_token(subject : str, db : Session) -> str:
     expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode = {
@@ -100,6 +117,18 @@ def create_refresh_token(subject : str, db : Session) -> str:
     }
     encoded = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     db.query(User).filter(User.mail == subject).update({"refresh_token" : encoded})
+    db.commit()
+    return encoded
+
+def create_company_refresh_token(subject : str, db : Session) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode = {
+        "sub" : subject,
+        "iat" : int(datetime.now(timezone.utc).timestamp()),
+        "exp" : int(expire.timestamp())
+    }
+    encoded = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    db.query(Company).filter(Company.email == subject).update({"refresh_token" : encoded})
     db.commit()
     return encoded
 
