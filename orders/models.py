@@ -2,7 +2,10 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTim
 from sqlalchemy.orm import relationship, validates
 from database import Base
 from config import Settings
-from users.models import User
+from orders.schema import OrderStatusEnum
+#from orders.schema import OrderPaymentType
+from products.models import Products
+
 # Columns that are common in most of the tables :-
 # status, creation_date, created_by, updation_date, updated_by, deletion_time, deleted_by
 
@@ -13,7 +16,7 @@ from users.models import User
 # Customer Related columns -> customer_name, customer_phone, customer_mail, customer_address, customer_remark
 # Payment Related Columns -> payment_type, total_amount (calculated by order_products table)
 # Order Related Columns - > platform_name, order_status
-# Other misc columns -> admin_remark
+# Other misc columns -> admin_remark 
 
 
 class Order(Base):
@@ -25,12 +28,13 @@ class Order(Base):
     customer_address = Column(String(500), nullable=False)
     platform_name = Column(String(255), nullable=False)
     order_payment_type = Column(
-        Enum(*settings.ORDER_PAYMENT_TYPE, name="payment_enum"), nullable=False
+        Enum(*Settings.ORDER_PAYMENT_TYPE, name="payment_enum"), nullable=False
     )
+    #order_payment_type = Column(Enum(OrderPaymentType), nullable=False)  #nikita
     total_amount = Column(Float, nullable=False)
     customer_remark = Column(String)
     admin_remark = Column(String)
-    order_status = Column(Enum(*Settings.ORDER_STATUS_ENUM, name='order_status_enum'), default=Settings.ORDER_STATUS_ENUM[0])
+    order_status = Column(Enum(OrderStatusEnum),default=OrderStatusEnum.pending, nullable=False)  #nikita
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     # order_date = Column(DateTime, default=func.now(), nullable=False) #Removed the order date column as it was duplicated in creation date

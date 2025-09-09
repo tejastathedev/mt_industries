@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from config import Settings 
+from config import OrderStatusEnum 
 
 
 
@@ -31,23 +31,7 @@ class PaymentStatusResponse(BaseModel):
 
 # nikita 
 
-
-
-
-# Create Enum dynamically from ORDER_STATUS_ENUM
-class OrderStatusEnum(str, Enum):
-    # Dynamically assign enum values
-    # Example: pending, dispatched, delivered, returned, rejected, cancelled
-    pending = "pending"
-    dispatched = "dispatched"
-    delivered = "delivered"
-    returned = "returned"
-    rejected = "rejected"
-    cancelled = "cancelled"
-
-    @classmethod
-    def choices(cls):
-        return [status.value for status in cls]
+#OrderStatusEnum = Settings.OrderStatusEnum
 
 class OrderBase(BaseModel):
     customer_name: str
@@ -101,12 +85,13 @@ class OrderProduct(OrderProductBase):
     class Config:
         orm_mode = True
 
-# class Constants:
-#     # 'ordered', 'delivered', 'cancelled', 'returned'
-#     ordered = 'ordered'
-#     delivered = 'delivered'
-#     cancelled = 'cancelled'
-#     returned = 'returned'
+class Constants:
+    # 'ordered', 'delivered', 'cancelled', 'returned'
+    ordered = 'ordered'
+    delivered = 'delivered'
+    cancelled = 'cancelled'
+    returned = 'returned'
+    pending = 'pending'
 
     
 

@@ -14,7 +14,7 @@ from database import get_db
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
 Oauth2Scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
-Oauth2Scheme1 = OAuth2PasswordBearer(tokenUrl="/company/token")
+Oauth2Scheme1 = OAuth2PasswordBearer(tokenUrl="/company/token") 
 
 # Creating basic schema to store token and its details
 #  which are needed to be accessed later in the authentication process

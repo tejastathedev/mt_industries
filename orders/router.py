@@ -1,12 +1,14 @@
-from fastapi import APIRouter, Depends
-from orders.schema import OrderCreate, OrderStatusEnum
+from fastapi import APIRouter, Depends, HTTPException, status
+from orders.schema import OrderCreate
 from database import Session, get_db
-from orders.models import Order
-from .service import create_payment_status, create_order_function
+from config import OrderStatusEnum
+
+# from schema import OrderStatusEnum
+from orders.service import  create_order_function
 
 
 # User endpoints
-@user_router.post('/register')
+# @user_router.post('/register')
 def register_user():
     pass  # Implementation for user registration
 
@@ -19,14 +21,14 @@ def register_user():
 
 
 
-#nikita
+#nikita 
 
 order_router = APIRouter(prefix='/orders', tags=['orders'])
 
 
 # Orders endpoints
 @order_router.post('/')
-def create_order(order: OrderCreate, db: Session = Depends(get_db)):
+def create_order(order: OrderCreate, db: Session = Depends(get_db), status_code= status.HTTP_201_CREATED):
     return create_order_function(order, db)
 
 

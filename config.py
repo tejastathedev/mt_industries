@@ -1,16 +1,34 @@
 import os
+from enum import Enum
 from dotenv import load_dotenv
 
 # Load variables from .env file
 load_dotenv()
 
+class OrderStatusEnum(Enum):
+    # 'ordered', 'delivered', 'cancelled', 'returned'
+    pending = 'pending'
+    dispatched = 'dispatched'
+    delivered = 'delivered'
+    returned = 'returned'
+    rejected = 'rejected'
+    cancelled = 'cancelled'
+
 
 class Settings:
     STATUS_ENUM = os.getenv("STATUS_ENUM", "active,deleted,blocked").split(",")
     ORDER_PAYMENT_TYPE = os.getenv("STATUS_ENUM", "COD,UPI").split(",")
+
+    #nikita
+    #OrderPaymentType = Enum("OrderPaymentType", {payment_type.upper(): payment_type for payment_type in ORDER_PAYMENT_TYPE})
+
     ORDER_STATUS_ENUM = os.getenv(
         "ORDER_STATUS_ENUM", "pending,dispatched,delivered,returned,rejected,cancelled"
     ).split(",")
+
+    # # written by nikita
+    # # Dynamically create an Enum class for order status
+    # OrderStatusEnum = Enum("OrderStatusEnum", {status.upper(): status for status in ORDER_STATUS_ENUM})
 
     DATA_ADDED_SUCCESSFULLY = os.getenv(
         "DATA_ADDED_SUCCESSFULLY", "Data added successfully"
