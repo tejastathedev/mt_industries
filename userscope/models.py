@@ -13,6 +13,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 from config import settings
 
+
 # ===========================
 # 1. UserScope
 # ===========================
