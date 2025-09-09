@@ -91,6 +91,23 @@ def create_access_token(subject : str, db : Session) -> str:
 
     return encoded
 
+# Access Token Creation Function
+def create_company_access_token(subject : str, db : Session) -> str:
+    expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + expires_delta
+
+    to_encode = {
+        "sub" : subject,
+        "iat" : int(datetime.now(timezone.utc).timestamp()),
+        "exp" : int(expire.timestamp())
+    }
+    encoded = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    # Storing access token in database
+    db.query(Company).filter(Company.email == subject).update({"access_token" : encoded})
+    db.commit()
+
+    return encoded
+
 def create_refresh_token(subject : str, db : Session) -> str:
     expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode = {
@@ -100,6 +117,18 @@ def create_refresh_token(subject : str, db : Session) -> str:
     }
     encoded = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     db.query(User).filter(User.mail == subject).update({"refresh_token" : encoded})
+    db.commit()
+    return encoded
+
+def create_company_refresh_token(subject : str, db : Session) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode = {
+        "sub" : subject,
+        "iat" : int(datetime.now(timezone.utc).timestamp()),
+        "exp" : int(expire.timestamp())
+    }
+    encoded = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    db.query(Company).filter(Company.email == subject).update({"refresh_token" : encoded})
     db.commit()
     return encoded
 
@@ -125,7 +154,6 @@ def validate_token(token : str = Depends(Oauth2Scheme), db : Session = Depends(g
         user = db.query(User).filter(User.access_token == token).first()
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="unAuthenticated")
-
         payload = decode_token(token)
         user_mail : str = payload.get("sub")
         if user_mail is None:
@@ -157,6 +185,27 @@ def validate_company_token(token : str = Depends(Oauth2Scheme1), db : Session = 
         token_data = TokenData(mail=user_mail)
     except JWTError:
         return credential_error
+
+
+def validate_company_token(token : str = Depends(Oauth2Scheme1), db : Session = Depends(get_db))->str:
+    credential_error = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+          detail="Could not validate token",
+            headers={"WWW-Authenticate" : "Bearer"}
+        )
+    try:
+        # check in database if the token is present?
+        # user = db.query(User).filter(User.access_token == token).first()
+        # if not user:
+        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="company unAuthenticated")
+        payload = decode_token(token)
+        user_mail : str = payload.get("sub")
+        if user_mail is None:
+            raise credential_error
+        token_data = TokenData(mail=user_mail)
+    except JWTError:
+        return credential_error
+
 
     company_details = get_company(token_data.mail, db)   
     if company_details is None or company_details.status != settings.STATUS_ENUM[0]:

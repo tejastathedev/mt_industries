@@ -1,8 +1,17 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Float, DateTime, func, Text
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    ForeignKey,
+    Enum,
+    Float,
+    DateTime,
+    func,
+)
 from sqlalchemy.orm import relationship, validates
 from database import Base
 from config import settings
-from products.models import Products
+
 
 # Columns that are common in most of the tables :-
 # status, creation_date, created_by, updation_date, updated_by, deletion_time, deleted_by
@@ -24,7 +33,7 @@ class Order(Base):
     customer_phone = Column(String(15), nullable=False)
     customer_mail = Column(String(255), nullable=False)
     customer_address = Column(String(500), nullable=False)
-    platform_name = Column(String(255), nullable=False)
+    platform_name = Column(String(255), nullable=True)
     order_payment_type = Column(
         Enum(*settings.ORDER_PAYMENT_TYPE, name="payment_enum"), nullable=False
     )
@@ -32,7 +41,8 @@ class Order(Base):
     customer_remark = Column(String)
     admin_remark = Column(String)
     order_status = Column(
-        Enum(*settings.ORDER_STATUS_ENUM, name="status_enum"), default=settings.ORDER_STATUS_ENUM[0]
+        Enum(*settings.ORDER_STATUS_ENUM, name="status_enum"),
+        default=settings.ORDER_STATUS_ENUM[0],
     )
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
@@ -53,7 +63,7 @@ class Order(Base):
 # order_products table schema docs:
 # id : primary_key, autoincrement
 # Relation with orders table:- order_id (referenced to orders.id)
-# Relation with products table:- product_id (refernced to products.id)
+# Relation with products table:- product_id (referenced to products.id)
 # Base Product's price calculation :- product_purchase_price, quantity, total_amount (product_purchase_price * quantity)
 # Discount Calculation :- discount(value not percentage), Using @validates to calculate discounted_amount
 # Organizational benefits :- Profit_amount (store profit from [product_id.(selling_price - cost_price)*quantity])
@@ -72,9 +82,7 @@ class OrderProduct(Base):
     profit_amount = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="order_products")
-    product = relationship(
-        "Products", back_populates="order_products"
-    )
+    product = relationship("Products", back_populates="order_products")
 
     @validates("discount")
     def calculate_discounted_amount(self, key, discount):
