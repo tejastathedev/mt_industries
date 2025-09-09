@@ -80,15 +80,4 @@ class Constants:
     returned = 'returned'
   
 
-# Changes made by nikita on 05092025
-# Adding OrderProductUpdate schema to update quantity and discount
-class OrderProductUpdate(BaseModel):
-    product_id : Optional[int]
-    quantity: Optional[int]
-    discount: Optional[float]
-    product_purchase_price: Optional[float]
-    total_amount: Optional[float]
-    profit_amount: Optional[float]
-    discounted_amount: Optional[float]
-    class Config:
-        orm_mode = True
+
