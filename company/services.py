@@ -37,6 +37,7 @@ def login(form_data, db):
 
 
 def register_company(payload, db):
+    print(payload)
     company = Company(
         name=payload.name,
         phone=payload.phone,

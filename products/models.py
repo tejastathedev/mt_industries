@@ -13,7 +13,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 from config import settings
 from company.models import Company
-
+# from orders.models import OrderProduct
 
 
 class Units(Base):

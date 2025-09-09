@@ -11,7 +11,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, validates
 from database import Base
 from config import settings
-
+from products.models import Products
 
 # Columns that are common in most of the tables :-
 # status, creation_date, created_by, updation_date, updated_by, deletion_time, deleted_by
