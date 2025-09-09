@@ -25,3 +25,6 @@ class UserScope(Base):
 
     # Relationships
     users = relationship("User", back_populates="scopes")
+
+class Manish:
+    name : "Manish"
