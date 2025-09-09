@@ -7,6 +7,10 @@ from extras.router import extra_router
 
 from warehouse.router import warehouse_router
 from utils.exception_handler import ExceptionHandler
+from cron_jobs.scheduler import init_scheduler
+from ucompany.routers import company_routers
+from userscope.routers import userscope_router
+from wearhouse.routers import wearhouse_router
 # from cron_jobs.scheduler import init_scheduler
 
 from products.models import *
@@ -17,7 +21,6 @@ from products.dimensionUnits.dimension_routers import dimension_router
 
 from products.router import productrouter
 from products.ProductHistory.router import producthistoryrouter
-
 
 
 app = FastAPI()
@@ -49,6 +52,16 @@ app.include_router(dimension_router)
 
 Base.metadata.create_all(engine)
 
+
+
+
+app = FastAPI()
+# app.include_router(auth_router)
+app.include_router(userscope_router)
+app.include_router(company_routers)
+app.include_router(wearhouse_router)
+app.include_router(user_router,tags=['user'])
+
 @app.get('/')
 def home_function():
     return "Server is up !"
@@ -61,6 +74,9 @@ ExceptionHandler(app)
 
 # Start scheduler
 # scheduler = init_scheduler()
+@app.on_event("startup")
+def start_scheduler():
+    init_scheduler()
 
 @app.on_event("startup")
 def start_scheduler():

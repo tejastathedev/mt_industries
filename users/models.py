@@ -3,11 +3,9 @@ from sqlalchemy import (
     Integer,
     String,
     ForeignKey,
-    CheckConstraint,
     DateTime,
     func,
     Enum,
-    Float,
 )
 from sqlalchemy.orm import relationship
 from database import Base
