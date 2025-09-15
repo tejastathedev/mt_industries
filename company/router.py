@@ -13,7 +13,7 @@ company_router = APIRouter(prefix="/company", tags=["Company Routs"])
 @company_router.post("/add_company")
 def add_company(payload: RegisterCompanySchema, db: Session = Depends(get_db)):
     company_data = register_company(payload, db)
-    Response.success(data=company_data)
+    return Response.success(data=company_data)
 
 # @company_router.post('/token')
 # def login_to_get_token(form_data : OAuth2PasswordRequestForm = Depends(), db : Session = Depends(get_db)):

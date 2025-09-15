@@ -51,11 +51,11 @@ ExceptionHandler(app)
 
 # Start scheduler
 # scheduler = init_scheduler()
-<<<<<<< HEAD
-=======
-@app.on_event("startup")
-def start_scheduler():
-    init_scheduler()
+# <<<<<<< HEAD
+# =======
+# @app.on_event("startup")
+# def start_scheduler():
+#     init_scheduler()
 
 Base.metadata.create_all(engine)
->>>>>>> 4adc65a67a0fb1c71747d6bc2d95dd606f5c9e34
+

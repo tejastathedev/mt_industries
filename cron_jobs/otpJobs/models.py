@@ -16,7 +16,7 @@ class OTPQueue(Base):
     )
 
     creation_date = Column(DateTime, default=datetime.now()) 
-    updation_date = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+    # updation_date = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
 
     # Relationship

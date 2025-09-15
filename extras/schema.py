@@ -15,3 +15,4 @@ class CaptchaSchema(BaseModel):
 
 class UnbanSchema(BaseModel):
     company_id : int
+
