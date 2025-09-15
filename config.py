@@ -6,6 +6,7 @@ load_dotenv()
 
 
 class Settings:
+    STOCK_TYPE = os.getenv("STOCK_TYPE", "stock,opening,sale").split(",")
     STATUS_ENUM = os.getenv("STATUS_ENUM", "active,deleted,blocked").split(",")
     ORDER_PAYMENT_TYPE = os.getenv("STATUS_ENUM", "COD,UPI").split(",")
     ORDER_STATUS_ENUM = os.getenv(
